@@ -7,3 +7,6 @@ View(kiwo)
 library(readr)
 umsatzdaten_gekuerzt <- read_csv("umsatzdaten_gekuerzt.csv")
 View(umsatzdaten_gekuerzt)
+#import schulferien
+schulferien <- read_csv("Schulferien.csv")
+View(schulferien)
