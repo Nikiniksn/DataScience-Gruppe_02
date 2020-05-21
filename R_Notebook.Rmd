@@ -1,0 +1,49 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+ 
+Laden von Packages
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(broom)
+library(Metrics)
+```
+
+Laden der CSV-Datein
+```{r}
+umsatzdaten_gekuerzt <- read_csv("umsatzdaten_gekuerzt.csv")
+
+kiwo <- read_csv("kiwo.csv")
+
+schulferien <- read_csv("Schulferien.csv")
+
+feiertage <- read_csv("Feiertage.csv")
+
+wetter <- read_csv("wetter.csv")
+```
+
+Integrierung der Wochentage
+```{r}
+umsatzdaten_gekuerzt$wochentag <- weekdays(umsatzdaten_gekuerzt$Datum)
+
+umsatzdaten_gekuerzt$wochentag <- factor(umsatzdaten_gekuerzt$wochentag, levels=c("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"))
+```
+
+Zusammenführung der Datein zu einer Tabelle
+```{r}
+sammlung <- dplyr::full_join(umsatzdaten_gekuerzt,wetter,by="Datum")
+sammlung <- dplyr::full_join(sammlung,kiwo,by="Datum")
+sammlung <- dplyr::full_join(sammlung,schulferien,by="Datum")
+sammlung <- dplyr::full_join(sammlung,feiertage,by="Datum")
+```
+
+
+```{r}
+mod <- lm(Umsatz ~ wochentag, sammlung)
+summary(mod)
+```
+
