@@ -1749,67 +1749,482 @@ summary {
 
 
 <!-- rnb-text-begin -->
-<p>Laden von Packages</p>
+<div id="einbinden-benötigter-bibliotheken" class="section level1">
+<h1>Einbinden benötigter Bibliotheken</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShyZWFkcilcbmxpYnJhcnkoZHBseXIpXG5saWJyYXJ5KGdncGxvdDIpXG5saWJyYXJ5KGx1YnJpZGF0ZSlcbmxpYnJhcnkoYnJvb20pXG5saWJyYXJ5KE1ldHJpY3MpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShyZWFkcilcbmxpYnJhcnkoZ2dwbG90MilcbmxpYnJhcnkobHVicmlkYXRlKVxubGlicmFyeShNZXRyaWNzKVxubGlicmFyeShlMTA3MSlcbmxpYnJhcnkoZHBseXIpXG5saWJyYXJ5KGJyb29tKVxubGlicmFyeShmYXN0RHVtbWllcylcbmBgYCJ9 -->
 <pre class="r"><code>library(readr)
-library(dplyr)
 library(ggplot2)
 library(lubridate)
+library(Metrics)
+library(e1071)
+library(dplyr)
 library(broom)
-library(Metrics)</code></pre>
+library(fastDummies)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Laden der CSV-Datein</p>
+</div>
+<div id="installation-von-python-und-der-für-tensorflow-benötigten-pakete-nur-einmalig-nötig" class="section level1">
+<h1>Installation von Python und der für TensorFlow benötigten Pakete (nur einmalig nötig)</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudW1zYXR6ZGF0ZW5fZ2VrdWVyenQgPC0gcmVhZF9jc3YoXCJ1bXNhdHpkYXRlbl9nZWt1ZXJ6dC5jc3ZcIilcblxua2l3byA8LSByZWFkX2NzdihcImtpd28uY3N2XCIpXG5cbnNjaHVsZmVyaWVuIDwtIHJlYWRfY3N2KFwiU2NodWxmZXJpZW4uY3N2XCIpXG5cbmZlaWVydGFnZSA8LSByZWFkX2NzdihcIkZlaWVydGFnZS5jc3ZcIilcblxud2V0dGVyIDwtIHJlYWRfY3N2KFwid2V0dGVyLmNzdlwiKVxuYGBgIn0= -->
-<pre class="r"><code>umsatzdaten_gekuerzt &lt;- read_csv(&quot;umsatzdaten_gekuerzt.csv&quot;)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaW5zdGFsbC5wYWNrYWdlcyhcInJldGljdWxhdGVcIilcbmxpYnJhcnkocmV0aWN1bGF0ZSlcblxuIyBJbnN0YWxsYXRpb24gdm9uIG1pbmljb25kYSAoZmFsbHMgbmljaHQgdm9yaGFuZGVuKVxuaW5zdGFsbF9taW5pY29uZGEoKVxuXG4jIEFubGVnZW4gZWluZXIgc3BlemllbGxlbiBQeXRob24gVW1nZWJ1bmdcbmNvbmRhX2NyZWF0ZShcInItcmV0aWN1bGF0ZVwiKVxuXG4jIEluc3RhbGxpZXJlbiBkZXIgUGFrZXRlIGluIGRlciBhbmdlbGVndGVuIFVtZ2VidW5nXG5jb25kYV9pbnN0YWxsKFwici1yZXRpY3VsYXRlXCIsIFwicGFuZGFzXCIpXG5jb25kYV9pbnN0YWxsKFwici1yZXRpY3VsYXRlXCIsIFwibnVtcHlcIilcbmNvbmRhX2luc3RhbGwoXCJyLXJldGljdWxhdGVcIiwgXCJ0ZW5zb3JmbG93XCIpXG5cbiMgVmVyd2VuZGVuIGRlciBzcGV6aWVsbGVuIFB5dGhvbiBVbWdlYnVuZyBkaWUgenV2b3IgZXJzdGVsbHQgd3VyZGVcbnVzZV9jb25kYWVudihcInItcmV0aWN1bGF0ZVwiKVxuYGBgIn0= -->
+<pre class="r"><code>install.packages(&quot;reticulate&quot;)
+library(reticulate)
 
-kiwo &lt;- read_csv(&quot;kiwo.csv&quot;)
+# Installation von miniconda (falls nicht vorhanden)
+install_miniconda()
 
-schulferien &lt;- read_csv(&quot;Schulferien.csv&quot;)
+# Anlegen einer speziellen Python Umgebung
+conda_create(&quot;r-reticulate&quot;)
 
-feiertage &lt;- read_csv(&quot;Feiertage.csv&quot;)
+# Installieren der Pakete in der angelegten Umgebung
+conda_install(&quot;r-reticulate&quot;, &quot;pandas&quot;)
+conda_install(&quot;r-reticulate&quot;, &quot;numpy&quot;)
+conda_install(&quot;r-reticulate&quot;, &quot;tensorflow&quot;)
 
-wetter &lt;- read_csv(&quot;wetter.csv&quot;)</code></pre>
+# Verwenden der speziellen Python Umgebung die zuvor erstellt wurde
+use_condaenv(&quot;r-reticulate&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Integrierung der Wochentage</p>
+</div>
+<div id="einlesen-der-csv-datein" class="section level1">
+<h1>Einlesen der CSV-Datein</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudW1zYXR6ZGF0ZW5fZ2VrdWVyenQkd29jaGVudGFnIDwtIHdlZWtkYXlzKHVtc2F0emRhdGVuX2dla3Vlcnp0JERhdHVtKVxuXG51bXNhdHpkYXRlbl9nZWt1ZXJ6dCR3b2NoZW50YWcgPC0gZmFjdG9yKHVtc2F0emRhdGVuX2dla3Vlcnp0JHdvY2hlbnRhZywgbGV2ZWxzPWMoXCJNb250YWdcIiwgXCJEaWVuc3RhZ1wiLCBcIk1pdHR3b2NoXCIsIFwiRG9ubmVyc3RhZ1wiLCBcIkZyZWl0YWdcIiwgXCJTYW1zdGFnXCIsIFwiU29ubnRhZ1wiKSlcbmBgYCJ9 -->
-<pre class="r"><code>umsatzdaten_gekuerzt$wochentag &lt;- weekdays(umsatzdaten_gekuerzt$Datum)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVW1zYXR6ZGF0ZW4gPC0gcmVhZF9jc3YoXCJ1bXNhdHpkYXRlbl9nZWt1ZXJ6dC5jc3ZcIilcblxuS2l3byA8LSByZWFkX2NzdihcImtpd28uY3N2XCIpXG5cbkZlaWVydGFnZSA8LSByZWFkX2NzdihcIkZlaWVydGFnZS5jc3ZcIilcblxuU2NodWxmZXJpZW4gPC0gcmVhZF9jc3YoXCJTY2h1bGZlcmllbi5jc3ZcIilcblxuV2V0dGVyIDwtIHJlYWRfY3N2KFwid2V0dGVyLmNzdlwiKVxuYGBgIn0= -->
+<pre class="r"><code>Umsatzdaten &lt;- read_csv(&quot;umsatzdaten_gekuerzt.csv&quot;)
 
-umsatzdaten_gekuerzt$wochentag &lt;- factor(umsatzdaten_gekuerzt$wochentag, levels=c(&quot;Montag&quot;, &quot;Dienstag&quot;, &quot;Mittwoch&quot;, &quot;Donnerstag&quot;, &quot;Freitag&quot;, &quot;Samstag&quot;, &quot;Sonntag&quot;))</code></pre>
+Kiwo &lt;- read_csv(&quot;kiwo.csv&quot;)
+
+Feiertage &lt;- read_csv(&quot;Feiertage.csv&quot;)
+
+Schulferien &lt;- read_csv(&quot;Schulferien.csv&quot;)
+
+Wetter &lt;- read_csv(&quot;wetter.csv&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Zusammenführung der Datein zu einer Tabelle</p>
+</div>
+<div id="integrierung-der-wochentage-in-die-datei-umsatzdaten" class="section level1">
+<h1>Integrierung der Wochentage in die Datei Umsatzdaten</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2FtbWx1bmcgPC0gZHBseXI6OmZ1bGxfam9pbih1bXNhdHpkYXRlbl9nZWt1ZXJ6dCx3ZXR0ZXIsYnk9XCJEYXR1bVwiKVxuc2FtbWx1bmcgPC0gZHBseXI6OmZ1bGxfam9pbihzYW1tbHVuZyxraXdvLGJ5PVwiRGF0dW1cIilcbnNhbW1sdW5nIDwtIGRwbHlyOjpmdWxsX2pvaW4oc2FtbWx1bmcsc2NodWxmZXJpZW4sYnk9XCJEYXR1bVwiKVxuc2FtbWx1bmcgPC0gZHBseXI6OmZ1bGxfam9pbihzYW1tbHVuZyxmZWllcnRhZ2UsYnk9XCJEYXR1bVwiKVxuYGBgIn0= -->
-<pre class="r"><code>sammlung &lt;- dplyr::full_join(umsatzdaten_gekuerzt,wetter,by=&quot;Datum&quot;)
-sammlung &lt;- dplyr::full_join(sammlung,kiwo,by=&quot;Datum&quot;)
-sammlung &lt;- dplyr::full_join(sammlung,schulferien,by=&quot;Datum&quot;)
-sammlung &lt;- dplyr::full_join(sammlung,feiertage,by=&quot;Datum&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVW1zYXR6ZGF0ZW4kV29jaGVudGFnIDwtIHdlZWtkYXlzKFVtc2F0emRhdGVuJERhdHVtKVxuXG4jIFVtd2FuZGx1bmcgdm9uICd3b2NoZW50YWdcIiBpbiBlaW5lIEZha3Rvci1WYXJpYWJsZSBtaXQgZWluZXIgdm9yZ2VnZWJlbiBTb3J0aWVydW5nIGRlciBMZXZlbCAoS2F0ZWdvcmllbilcblVtc2F0emRhdGVuJFdvY2hlbnRhZyA8LSBmYWN0b3IoVW1zYXR6ZGF0ZW4kV29jaGVudGFnLCBsZXZlbHM9YyhcIk1vbnRhZ1wiLCBcIkRpZW5zdGFnXCIsIFwiTWl0dHdvY2hcIiwgXCJEb25uZXJzdGFnXCIsIFwiRnJlaXRhZ1wiLCBcIlNhbXN0YWdcIiwgXCJTb25udGFnXCIpKVxuYGBgIn0= -->
+<pre class="r"><code>Umsatzdaten$Wochentag &lt;- weekdays(Umsatzdaten$Datum)
+
+# Umwandlung von &#39;wochentag&quot; in eine Faktor-Variable mit einer vorgegeben Sortierung der Level (Kategorien)
+Umsatzdaten$Wochentag &lt;- factor(Umsatzdaten$Wochentag, levels=c(&quot;Montag&quot;, &quot;Dienstag&quot;, &quot;Mittwoch&quot;, &quot;Donnerstag&quot;, &quot;Freitag&quot;, &quot;Samstag&quot;, &quot;Sonntag&quot;))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+<div id="zusammenführung-der-datein-zu-einer-tabelle" class="section level1">
+<h1>Zusammenführung der Datein zu einer Tabelle</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9kIDwtIGxtKFVtc2F0eiB+IHdvY2hlbnRhZywgc2FtbWx1bmcpXG5zdW1tYXJ5KG1vZClcbmBgYCJ9 -->
-<pre class="r"><code>mod &lt;- lm(Umsatz ~ wochentag, sammlung)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuU2FtbWx1bmcgPC0gZHBseXI6OmZ1bGxfam9pbihVbXNhdHpkYXRlbixXZXR0ZXIsYnk9XCJEYXR1bVwiKVxuU2FtbWx1bmcgPC0gZHBseXI6OmZ1bGxfam9pbihTYW1tbHVuZyxLaXdvLGJ5PVwiRGF0dW1cIilcblNhbW1sdW5nIDwtIGRwbHlyOjpmdWxsX2pvaW4oU2FtbWx1bmcsU2NodWxmZXJpZW4sYnk9XCJEYXR1bVwiKVxuU2FtbWx1bmcgPC0gZHBseXI6OmZ1bGxfam9pbihTYW1tbHVuZyxGZWllcnRhZ2UsYnk9XCJEYXR1bVwiKVxuYGBgIn0= -->
+<pre class="r"><code>Sammlung &lt;- dplyr::full_join(Umsatzdaten,Wetter,by=&quot;Datum&quot;)
+Sammlung &lt;- dplyr::full_join(Sammlung,Kiwo,by=&quot;Datum&quot;)
+Sammlung &lt;- dplyr::full_join(Sammlung,Schulferien,by=&quot;Datum&quot;)
+Sammlung &lt;- dplyr::full_join(Sammlung,Feiertage,by=&quot;Datum&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="aufteilung-des-datensatzes-in-trainings--und-testdaten" class="section level2">
+<h2>Aufteilung des Datensatzes in Trainings- und Testdaten</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBadWZhbGxzesOkaGxlciBzZXR6ZW4gKHVtIGRpZSB6dWbDpGxsaWdlIFBhcnRpdGlvbmllcnVuZyBiZWkgamVkZW0gRHVyY2hsYXVmIGdsZWljaCB6dSBoYWx0ZW4pXG5zZXQuc2VlZCgxKVxuXG4jIFp1ZsOkbGxpZ2UgWmllaHVuZyBJbmRpemVzIGbDvHIgZGllIFplaWxlbiBkZXMgRGF0ZW5zYXR6ZXMsIGRpZSBkZW0gVHJhaW5pbnNkYXRlbnNhdHogenVnZW9yZG5ldCB3ZXJkZW5cbmluZGljZXNfdHJhaW4gPC0gc2FtcGxlKHNlcV9sZW4obnJvdyhTYW1tbHVuZykpLCBzaXplID0gZmxvb3IoMC44MCAqIG5yb3coU2FtbWx1bmcpKSlcblxuIyBEZWZpbml0aW9uIGRlcyBUcmFpbmluZ3MtIHVuZCBUZXN0ZGF0ZW5zYXR6IGR1cmNoIFNlbGVrdGlvbiBiencuIERlc2VsZWt0aW9uIGRlciBlbnRzcHJlY2hlbmRlbiBEYXRlbnplaWxlblxudHJhaW5fZGF0YXNldCA8LSB0cmFpbl9kYXRhc2V0X29yZyA8LSBTYW1tbHVuZ1tpbmRpY2VzX3RyYWluLCBdXG50ZXN0X2RhdGFzZXQgPC0gU2FtbWx1bmdbLWluZGljZXNfdHJhaW4sIF1cbmBgYCJ9 -->
+<pre class="r"><code># Zufallszähler setzen (um die zufällige Partitionierung bei jedem Durchlauf gleich zu halten)
+set.seed(1)
+
+# Zufällige Ziehung Indizes für die Zeilen des Datensatzes, die dem Traininsdatensatz zugeordnet werden
+indices_train &lt;- sample(seq_len(nrow(Sammlung)), size = floor(0.80 * nrow(Sammlung)))
+
+# Definition des Trainings- und Testdatensatz durch Selektion bzw. Deselektion der entsprechenden Datenzeilen
+train_dataset &lt;- train_dataset_org &lt;- Sammlung[indices_train, ]
+test_dataset &lt;- Sammlung[-indices_train, ]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+</div>
+<div id="vorhersage-durch-wetterdaten" class="section level1">
+<h1>Vorhersage durch Wetterdaten</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9kIDwtIGxtIChVbXNhdHogfiBUZW1wZXJhdHVyICsgV2luZGdlc2Nod2luZGlna2VpdCArIGFzLmZhY3RvcihXZXR0ZXJjb2RlKSArIGFzLmZhY3RvciAoQmV3b2Vsa3VuZyksU2FtbWx1bmcpIFxuc3VtbWFyeShtb2QpXG4jS2VpbiBzaWduaWZpa2FudGVyIEVpbmZsdXNzIGRlciBXaW5kZ2VzY2h3aW5kaWdrZWl0IGF1ZiBVbXNhdHogKGV2ZW50dWVsbCB1LWbDtnJtaWdlbiBFZmZla3QgcHLDvGZlbilcbiNTaWduaWZpa2FudCBwb3NpdGl2ZXIgWnVzYW1tZW5oYW5nIHp3aXNjaGVuIFRlbXBlcmF0dXIgdW5kIFVtc2F0ejogQmVpIGjDtmhlcmVuIFRlbXBlcmF0dXJlbiBpc3QgZGVyIFVtc2F0eiBow7ZoZXIjIFxuI1NpZ25pZmlrYW50IGdlcmluZ2VyZXIgVW1zYXR6IGJlaSBXZXR0ZXJjb2RlIDcxIC0tPiAgQmVpIGR1cmNoZ2VoZW5kZW0gbGVpY2h0ZW4gU2NobmVlZmFsbCB3ZW5pZ2VyIGdla2F1ZnQjXG4jQmV3w7Zsa3VuZyBDb2RlIDEgc2FndCBVbXNhdHogc2lnbmlmaWthbnQgdm9yaGVyOiBow7ZoZXJlciBVbXNhdHogYmVpIHdvbGtlbmxvc2VtIEhpbW1lbCwgZXZ0bCBCaWxkdW5nIGRpY2hvdG9tZXIgVmFyaWFibGUgc29ubmlnIHZzLiBiZXfDtmxrdCMjI1xuYGBgIn0= -->
+<pre class="r"><code>mod &lt;- lm (Umsatz ~ Temperatur + Windgeschwindigkeit + as.factor(Wettercode) + as.factor (Bewoelkung),Sammlung) 
+summary(mod)
+#Kein signifikanter Einfluss der Windgeschwindigkeit auf Umsatz (eventuell u-förmigen Effekt prüfen)
+#Signifikant positiver Zusammenhang zwischen Temperatur und Umsatz: Bei höheren Temperaturen ist der Umsatz höher# 
+#Signifikant geringerer Umsatz bei Wettercode 71 --&gt;  Bei durchgehendem leichten Schneefall weniger gekauft#
+#Bewölkung Code 1 sagt Umsatz signifikant vorher: höherer Umsatz bei wolkenlosem Himmel, evtl Bildung dichotomer Variable sonnig vs. bewölkt###</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="vohersage-durch-warengruppe" class="section level1">
+<h1>Vohersage durch Warengruppe</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9kIDwtbG0gKFVtc2F0eiB+IGFzLmZhY3RvciAoV2FyZW5ncnVwcGUpLFNhbW1sdW5nKSBcbnN1bW1hcnkgKG1vZClcbiNFaW56ZWxuZSBXYXJlbmdydXBwZW4gaW4gc2lnbmlmaWthbnRlbSBadXNhbW1lbmhhbmcgbWl0IFVtc2F0eiAobG9naXNjaCwgQXVmbmFobWUgbnVyIGJlZGluZ3Qgc2lubnZvbGwpXG4jV2FyZW5ncnVwcGUgMiwzIHVuZCA1IHNhZ2VuIGhvaGVuIFVtc2F0eiB2b3JoZXIsIFdhcmVuZ3J1cHBlIDQgdW5kIDYgKGtvbmRpdG9yZWkgdW5kIFNhaXNvbmJyb3QpIGtvcnJlbGllcmVuIHNpZ25pZmlrYW50IG5lZ2F0aXYgbWl0IFVtc2F0elxuYGBgIn0= -->
+<pre class="r"><code>mod &lt;-lm (Umsatz ~ as.factor (Warengruppe),Sammlung) 
+summary (mod)
+#Einzelne Warengruppen in signifikantem Zusammenhang mit Umsatz (logisch, Aufnahme nur bedingt sinnvoll)
+#Warengruppe 2,3 und 5 sagen hohen Umsatz vorher, Warengruppe 4 und 6 (konditorei und Saisonbrot) korrelieren signifikant negativ mit Umsatz</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="vohersage-durch-ferien" class="section level1">
+<h1>Vohersage durch Ferien</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9kIDwtIGxtIChVbXNhdHogfiBGZXJpZW4sIFNhbW1sdW5nKVxuc3VtbWFyeSAobW9kKVxuIyMjU2lnbmlmaWthbnQgaMO2aGVyZXIgVW1zYXR6IGluIFNvbW1lcmZlcmllbiMjI1xuYGBgIn0= -->
+<pre class="r"><code>mod &lt;- lm (Umsatz ~ Ferien, Sammlung)
+summary (mod)
+###Signifikant höherer Umsatz in Sommerferien###</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="vorhersage-durch-feiertage" class="section level1">
+<h1>Vorhersage durch Feiertage</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9kIDwtIGxtIChVbXNhdHogfiBGZWllcnRhZywgU2FtbWx1bmcpXG5zdW1tYXJ5IChtb2QpXG4jIyNrZWluIHNpZ25pZmlrYW50ZXIgRWluZmx1c3MgZGVyIEZlaWVydGFnZSwgXG4jI2V2ZW50dWVsbCBQcsO8ZnVuZyBpbiBBYmjDpG5naWdrZWl0IHZvbiBGZXJpZW4gdW5kIGxhbmdlbSBXb2NoZW5lbmRlIyMjXG5gYGAifQ== -->
+<pre class="r"><code>mod &lt;- lm (Umsatz ~ Feiertag, Sammlung)
+summary (mod)
+###kein signifikanter Einfluss der Feiertage, 
+##eventuell Prüfung in Abhängigkeit von Ferien und langem Wochenende###</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="vorhersage-durch-kieler-woche" class="section level1">
+<h1>Vorhersage durch Kieler Woche</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9kIDwtbG0gKFVtc2F0eiB+IEtpZWxlcldvY2hlLCBTYW1tbHVuZylcbnN1bW1hcnkgKG1vZClcbiNLaWVsZXIgV29jaGUgd2lya3Qgc2ljaCBzaWduaWZpa2FudCBwb3NpdGl2IGF1ZiBVbXNhdHogYXVzLCBzdGFya2VyIEVmZmVrdCoqXG5gYGAifQ== -->
+<pre class="r"><code>mod &lt;-lm (Umsatz ~ KielerWoche, Sammlung)
+summary (mod)
+#Kieler Woche wirkt sich signifikant positiv auf Umsatz aus, starker Effekt**</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="vorhersage-durch-wochentag" class="section level1">
+<h1>Vorhersage durch Wochentag</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9kIDwtbG0gKFVtc2F0eiB+IGFzLmZhY3RvcihXb2NoZW50YWcpLCBVbXNhdHpkYXRlbilcbnN1bW1hcnkobW9kKVxuI1NpZ25pZmlrYW50IGVyaMO2aHRlciBVbXNhdHogYW0gV29jaGVuZW5kZSMjI1xuXG4jIyNGYXppdDogYmVkZXV0c2FtZSBIYXVwdGVmZmVrdGUjIyM6XG5cbiMjcG9zaXRpdjpcblxuIyNLaWVsZXIgV29jaGUjI1xuIyNXb2NoZW5lbmRlIyNcbiMjU29tbWVyZmVyaWVuIyNcbiMjU29ubmlnZXMgV2V0dGVyIyNcbiNWZXJrYXVmIEJyb3QsIEJyw7Z0Y2hlbiB1bmQgQ3JvaXNzYW50cyMjXG4jI0hvaGUgVGVtcGVyYXR1cmVuIyNcblxuIyNuZWdhdGl2XG4jI2xlaWNodGVyIFNjaG5lZWZhbGxcbiMjVmVya2F1ZiB2b24gU2Fpc29uYnJvdCB1bmQgS29uZGl0b3JlaXdhcmUgKGV2dGwuIGdlcmluZ2VyZSBNYXJnZSlcbmBgYCJ9 -->
+<pre class="r"><code>mod &lt;-lm (Umsatz ~ as.factor(Wochentag), Umsatzdaten)
+summary(mod)
+#Signifikant erhöhter Umsatz am Wochenende###
+
+###Fazit: bedeutsame Haupteffekte###:
+
+##positiv:
+
+##Kieler Woche##
+##Wochenende##
+##Sommerferien##
+##Sonniges Wetter##
+#Verkauf Brot, Brötchen und Croissants##
+##Hohe Temperaturen##
+
+##negativ
+##leichter Schneefall
+##Verkauf von Saisonbrot und Konditoreiware (evtl. geringere Marge)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="vorhersage-durch-wetterdaten-1" class="section level1">
+<h1>Vorhersage durch Wetterdaten</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9kIDwtIGxtIChVbXNhdHogfiBXaW5kZ2VzY2h3aW5kaWdrZWl0ICsgVGVtcGVyYXR1cixTYW1tbHVuZykgXG5zdW1tYXJ5KG1vZClcbmBgYCJ9 -->
+<pre class="r"><code>mod &lt;- lm (Umsatz ~ Windgeschwindigkeit + Temperatur,Sammlung) 
 summary(mod)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+<div id="estimating-training-models" class="section level1">
+<h1>Estimating (Training) Models</h1>
+</div>
+<div id="nur-zufällige-kombination-von-faktoren" class="section level1">
+<h1>Nur zufällige Kombination von Faktoren</h1>
+</div>
+<div id="to-do-systematisierung-der-faktoren-und-integration-von-wochentages-feiertagen-und-ferien" class="section level1">
+<h1>To Do: Systematisierung der Faktoren und Integration von Wochentages, Feiertagen und Ferien</h1>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9kMSA8LSBsbShVbXNhdHogfiBUZW1wZXJhdHVyLCBTYW1tbHVuZylcbm1vZDIgPC0gbG0oVW1zYXR6IH4gVGVtcGVyYXR1ciArIFdpbmRnZXNjaHdpbmRpZ2tlaXQsIFNhbW1sdW5nKVxubW9kMyA8LSBsbShVbXNhdHogfiBUZW1wZXJhdHVyICsgV2luZGdlc2Nod2luZGlna2VpdCArIGFzLmZhY3RvcihCZXdvZWxrdW5nKSwgU2FtbWx1bmcpXG5tb2Q0IDwtIGxtKFVtc2F0eiB+IFRlbXBlcmF0dXIgKyBXaW5kZ2VzY2h3aW5kaWdrZWl0ICsgYXMuZmFjdG9yKEJld29lbGt1bmcpICsgYXMuZmFjdG9yKFdldHRlcmNvZGUpLCBTYW1tbHVuZylcbm1vZDUgPC0gbG0oVW1zYXR6IH4gVGVtcGVyYXR1ciArIFdpbmRnZXNjaHdpbmRpZ2tlaXQgKyBhcy5mYWN0b3IoQmV3b2Vsa3VuZykgKyBhcy5mYWN0b3IoV2V0dGVyY29kZSkgKyBhcy5mYWN0b3IoV2FyZW5ncnVwcGUpLCBTYW1tbHVuZylcbm1vZDYgPC0gbG0oVW1zYXR6IH4gVGVtcGVyYXR1ciArIFdpbmRnZXNjaHdpbmRpZ2tlaXQgKyBhcy5mYWN0b3IoQmV3b2Vsa3VuZykgKyBhcy5mYWN0b3IoV2V0dGVyY29kZSkgKyBhcy5mYWN0b3IoV2FyZW5ncnVwcGUpICsgS2llbGVyV29jaGUsIFNhbW1sdW5nKVxubW9kNyA8LSBsbShVbXNhdHogfiBUZW1wZXJhdHVyICsgV2luZGdlc2Nod2luZGlna2VpdCArIFdpbmRnZXNjaHdpbmRpZ2tlaXQqVGVtcGVyYXR1ciArIGFzLmZhY3RvcihCZXdvZWxrdW5nKSArIGFzLmZhY3RvcihXZXR0ZXJjb2RlKSArIGFzLmZhY3RvcihXYXJlbmdydXBwZSkgKyBLaWVsZXJXb2NoZSAsIFNhbW1sdW5nKVxuYGBgIn0= -->
+<pre class="r"><code>mod1 &lt;- lm(Umsatz ~ Temperatur, Sammlung)
+mod2 &lt;- lm(Umsatz ~ Temperatur + Windgeschwindigkeit, Sammlung)
+mod3 &lt;- lm(Umsatz ~ Temperatur + Windgeschwindigkeit + as.factor(Bewoelkung), Sammlung)
+mod4 &lt;- lm(Umsatz ~ Temperatur + Windgeschwindigkeit + as.factor(Bewoelkung) + as.factor(Wettercode), Sammlung)
+mod5 &lt;- lm(Umsatz ~ Temperatur + Windgeschwindigkeit + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe), Sammlung)
+mod6 &lt;- lm(Umsatz ~ Temperatur + Windgeschwindigkeit + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche, Sammlung)
+mod7 &lt;- lm(Umsatz ~ Temperatur + Windgeschwindigkeit + Windgeschwindigkeit*Temperatur + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche , Sammlung)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShtb2QxKVxuc3VtbWFyeSAobW9kMilcbnN1bW1hcnkobW9kMylcbnN1bW1hcnkobW9kMylcbnN1bW1hcnkobW9kNClcbnN1bW1hcnkobW9kNSlcbnN1bW1hcnkobW9kNilcbnN1bW1hcnkobW9kNylcbmBgYCJ9 -->
+<pre class="r"><code>summary(mod1)
+summary (mod2)
+summary(mod3)
+summary(mod3)
+summary(mod4)
+summary(mod5)
+summary(mod6)
+summary(mod7)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2xhbmNlKG1vZDEpXG5nbGFuY2UgKG1vZDIpXG5nbGFuY2UgKG1vZDMpXG5nbGFuY2UgKG1vZDQpXG5nbGFuY2UgKG1vZDUpXG5nbGFuY2UgKG1vZDYpXG5nbGFuY2UgKG1vZDcpXG5gYGAifQ== -->
+<pre class="r"><code>glance(mod1)
+glance (mod2)
+glance (mod3)
+glance (mod4)
+glance (mod5)
+glance (mod6)
+glance (mod7)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="preparation-of-model-results" class="section level1">
+<h1>Preparation of Model Results</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmJpbmQoZ2xhbmNlKG1vZDEpLCBnbGFuY2UobW9kMiksIGdsYW5jZShtb2QzKSwgZ2xhbmNlKG1vZDQpLCBnbGFuY2UobW9kNSksIGdsYW5jZShtb2Q2KSwgZ2xhbmNlKG1vZDcpKVxuYGBgIn0= -->
+<pre class="r"><code>rbind(glance(mod1), glance(mod2), glance(mod3), glance(mod4), glance(mod5), glance(mod6), glance(mod7))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>#Vorhersageverbesserung vor allem durch Aufnahme von Warengruppe und Kieler Woche, #Aufnahme von Warengruppe jedoch nur bedingt sinnvoll# #Kieler Woche als sehr starker Umsatztreiber### ##To Do: Unbedingt Wochentag und Ferien intergieren, da sign. Korrelation mit Umsatz in einfacher Regression#</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBNb2RlbCBQcmVkaWN0aW9uIFF1YWxpdHkgZm9yIHRoZSBUcmFpbmluZyBEYXRhIFVzaW5nIHRoZSBNZWFuIEFic29sdXRlIEVycm9yXG5yYmluZChtYWUoU2FtbWx1bmckVW1zYXR6LCBwcmVkaWN0KG1vZDEpKSxcbiAgICAgIG1hZShTYW1tbHVuZyRVbXNhdHosIHByZWRpY3QobW9kMikpLFxuICAgICAgbWFlKFNhbW1sdW5nJFVtc2F0eiwgcHJlZGljdChtb2QzKSksXG4gICAgICBtYWUoU2FtbWx1bmckVW1zYXR6LCBwcmVkaWN0KG1vZDQpKSxcbiAgICAgIG1hZShTYW1tbHVuZyRVbXNhdHosIHByZWRpY3QobW9kNSkpLFxuICAgICAgbWFlKFNhbW1sdW5nJFVtc2F0eiwgcHJlZGljdChtb2Q2KSksXG4gICAgICBtYWUoU2FtbWx1bmckVW1zYXR6LCBwcmVkaWN0KG1vZDcpKSlcbmBgYCJ9 -->
+<pre class="r"><code># Model Prediction Quality for the Training Data Using the Mean Absolute Error
+rbind(mae(Sammlung$Umsatz, predict(mod1)),
+      mae(Sammlung$Umsatz, predict(mod2)),
+      mae(Sammlung$Umsatz, predict(mod3)),
+      mae(Sammlung$Umsatz, predict(mod4)),
+      mae(Sammlung$Umsatz, predict(mod5)),
+      mae(Sammlung$Umsatz, predict(mod6)),
+      mae(Sammlung$Umsatz, predict(mod7)))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBNb2RlbCBQcmVkaWN0aW9uIFF1YWxpdHkgZm9yIHRoZSBUcmFpbmluZyBEYXRhIFVzaW5nIHRoZSBNZWFuIEFic29sdXRlIFBlcmNlbnRhZ2UgRXJyb3JcbnJiaW5kKG1hcGUoU2FtbWx1bmckVW1zYXR6LCBwcmVkaWN0KG1vZDEpKSxcbiAgICAgICBtYXBlKFNhbW1sdW5nJFVtc2F0eiwgcHJlZGljdChtb2QyKSksXG4gICAgICAgbWFwZShTYW1tbHVuZyRVbXNhdHosIHByZWRpY3QobW9kMykpLFxuICAgICAgIG1hcGUoU2FtbWx1bmckVW1zYXR6LCBwcmVkaWN0KG1vZDQpKSxcbiAgICAgICBtYXBlKFNhbW1sdW5nJFVtc2F0eiwgcHJlZGljdChtb2Q1KSksXG4gICAgICAgbWFwZShTYW1tbHVuZyRVbXNhdHosIHByZWRpY3QobW9kNikpLFxuICAgICAgIG1hcGUoU2FtbWx1bmckVW1zYXR6LCBwcmVkaWN0KG1vZDcpKSlcbmBgYCJ9 -->
+<pre class="r"><code># Model Prediction Quality for the Training Data Using the Mean Absolute Percentage Error
+rbind(mape(Sammlung$Umsatz, predict(mod1)),
+       mape(Sammlung$Umsatz, predict(mod2)),
+       mape(Sammlung$Umsatz, predict(mod3)),
+       mape(Sammlung$Umsatz, predict(mod4)),
+       mape(Sammlung$Umsatz, predict(mod5)),
+       mape(Sammlung$Umsatz, predict(mod6)),
+       mape(Sammlung$Umsatz, predict(mod7)))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBNb2RlbCBQcmVkaWN0aW9uIFF1YWxpdHkgZm9yIHRoZSAoVW5rbm93bikgVGVzdCBEYXRhIFVzaW5nIHRoZSBNZWFuIEFic29sdXRlIFBlcmNlbnRhZ2UgRXJyb3JcbnJiaW5kKG1hcGUoU2FtbWx1bmdfdGVzdCRVbXNhdHosIHByZWRpY3QobW9kMSwgbmV3ZGF0YT1TYW1tbHVuZ190ZXN0KSksXG4gICAgICBtYXBlKFNhbW1sdW5nX3Rlc3QkVW1zYXR6LCBwcmVkaWN0KG1vZDIsIG5ld2RhdGE9U2FtbWx1bmdfdGVzdCkpLFxuICAgICAgbWFwZShTYW1tbHVuZ190ZXN0JFVtc2F0eiwgcHJlZGljdChtb2QzLCBuZXdkYXRhPVNhbW1sdW5nX3Rlc3QpKSxcbiAgICAgIG1hcGUoU2FtbWx1bmdfdGVzdCRVbXNhdHosIHByZWRpY3QobW9kNCwgbmV3ZGF0YT1TYW1tbHVuZ190ZXN0KSksXG4gICAgICBtYXBlKFNhbW1sdW5nX3Rlc3QkVW1zYXR6LCBwcmVkaWN0KG1vZDUsIG5ld2RhdGE9U2FtbWx1bmdfdGVzdCkpLFxuICAgICAgbWFwZShTYW1tbHVuZ190ZXN0JFVtc2F0eiwgcHJlZGljdChtb2Q2LCBuZXdkYXRhPVNhbW1sdW5nX3Rlc3QpKSlcbmBgYCJ9 -->
+<pre class="r"><code># Model Prediction Quality for the (Unknown) Test Data Using the Mean Absolute Percentage Error
+rbind(mape(Sammlung_test$Umsatz, predict(mod1, newdata=Sammlung_test)),
+      mape(Sammlung_test$Umsatz, predict(mod2, newdata=Sammlung_test)),
+      mape(Sammlung_test$Umsatz, predict(mod3, newdata=Sammlung_test)),
+      mape(Sammlung_test$Umsatz, predict(mod4, newdata=Sammlung_test)),
+      mape(Sammlung_test$Umsatz, predict(mod5, newdata=Sammlung_test)),
+      mape(Sammlung_test$Umsatz, predict(mod6, newdata=Sammlung_test)))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="data-preparation" class="section level2">
+<h2>Data Preparation</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBVbmNvbW1lbnQgdGhlIGZvbGxvd2luZyBsaW5lIHRvIGNoZWNrIHRoZSBjb3JyZWN0bmVzcyBvZiB0aGUgY29kZSB3aXRoIGEgc21hbGwgKGFuZCBjb21wdXRhdGlvbmFsbHkgZmFzdCkgdHJhaW5pbmcgZGF0YSBzZXRcbnRyYWluX2RhdGFzZXQgPC0gc2FtcGxlX2ZyYWModHJhaW5fZGF0YXNldF9vcmcsIC4xMClcbmBgYCJ9 -->
+<pre class="r"><code># Uncomment the following line to check the correctness of the code with a small (and computationally fast) training data set
+train_dataset &lt;- sample_frac(train_dataset_org, .10)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="training-the-svm" class="section level2">
+<h2>Training the SVM</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBFc3RpbWF0aW9uIG9mIGFuIFNWTSB3aXRoIG9wdGltaXplZCB3ZWlnaHRpbmcgcGFyYW1ldGVycyBhbmQgZ2l2ZW4gc3RhbmRhcmQgaHlwZXIgcGFyYW1ldGVyc1xuIyBUeXBpY2FsbHkgbm90IHVzZWQ7IGluc3RlYWQsIHRoZSBmdW5jdGlvbiBzdm1fdHVuZSBpcyB1c2VkIGluIG9yZGVyIHRvIGFsc28gZ2V0IGEgbW9kZWwgd2l0aCBvcHRpbWl6ZWQgaHlwZXIgcGFyYW1ldGVyc1xubW9kZWxfc3ZtIDwtIHN2bShVbXNhdHogfiBXb2NoZW50YWcsIHRyYWluX2RhdGFzZXQpXG5gYGAifQ== -->
+<pre class="r"><code># Estimation of an SVM with optimized weighting parameters and given standard hyper parameters
+# Typically not used; instead, the function svm_tune is used in order to also get a model with optimized hyper parameters
+model_svm &lt;- svm(Umsatz ~ Wochentag, train_dataset)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBFc3RpbWF0aW9uIG9mIHZhcmlvdXMgU1ZNIChlYWNoIHdpdGggb3B0aW1pemVkIHdlaWdodGluZyBwYXJhbWV0ZXJzKSB1c2luZyBzeXN0ZW1hdGljYWxseSB2YXJpZWQgaHlwZXIgcGFyYW1ldGVycyAodHlwaWNhbGx5IGNhbGxlZCAnZ3JpZCBzZWFyY2gnIGFwcHJvYWNoKSBhbmQgY3Jvc3MgdmFsaWRhdGlvblxuIyB0aGUgcmVzdWx0aW5nIG9iamVjdCBpbmNsdWRlcyB0aGUgb3B0aW1hbCBtb2RlbCBpbiB0aGUgZWxlbWVudCBuYW1lZCAnYmVzdC5tb2RlbCdcbnN2bV90dW5lIDwtIHR1bmUoc3ZtLCBVbXNhdHogfiBXb2NoZW50YWcgKyBCZXdvZWxrdW5nICsgVGVtcGVyYXR1ciArIEZlcmllbiwgZGF0YT10cmFpbl9kYXRhc2V0LFxuICAgICAgICAgICAgICAgICByYW5nZXMgPSBsaXN0KGVwc2lsb24gPSBzZXEoMC4yLDEsMC4xKSwgY29zdCA9IDJeKDI6MykpKVxuYGBgIn0= -->
+<pre class="r"><code># Estimation of various SVM (each with optimized weighting parameters) using systematically varied hyper parameters (typically called &#39;grid search&#39; approach) and cross validation
+# the resulting object includes the optimal model in the element named &#39;best.model&#39;
+svm_tune &lt;- tune(svm, Umsatz ~ Wochentag + Bewoelkung + Temperatur + Ferien, data=train_dataset,
+                 ranges = list(epsilon = seq(0.2,1,0.1), cost = 2^(2:3)))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="checking-the-prediction-quality" class="section level2">
+<h2>Checking the Prediction Quality</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDYWxjdWxhdGluZyB0aGUgcHJlZGljdGlvbiBmb3IgdGhlIHRyYWluaW5nIGRhdGEgdXNpbmcgdGhlIGJlc3QgbW9kZWwgYWNjb3JkaW5nIHRvIHRoZSBncmlkIHNlYXJjaFxucHJlZF90cmFpbiA8LSBwcmVkaWN0KHN2bV90dW5lJGJlc3QubW9kZWwsIHRyYWluX2RhdGFzZXQpXG4jIENhbGN1bGF0aW5nIHRoZSBwcmVkaWN0aW9uIHF1YWxpdHkgZm9yIHRoZSB0cmFpbmluZyBkYXRhIHVzaW5nIHRoZSBNQVBFXG5tYXBlKHRyYWluX2RhdGFzZXQkcHJpY2UsIHByZWRfdHJhaW4pXG5gYGAifQ== -->
+<pre class="r"><code># Calculating the prediction for the training data using the best model according to the grid search
+pred_train &lt;- predict(svm_tune$best.model, train_dataset)
+# Calculating the prediction quality for the training data using the MAPE
+mape(train_dataset$price, pred_train)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDYWxjdWxhdGluZyB0aGUgcHJlZGljdGlvbiBmb3IgdGhlIHRlc3QgZGF0YSB1c2luZyB0aGUgYmVzdCBtb2RlbCBhY2NvcmRpbmcgdG8gdGhlIGdyaWQgc2VhcmNoXG5wcmVkX3Rlc3QgPC0gcHJlZGljdChzdm1fdHVuZSRiZXN0Lm1vZGVsLCB0ZXN0X2RhdGFzZXQpXG4jIENhbGN1bGF0aW5nIHRoZSBwcmVkaWN0aW9uIHF1YWxpdHkgZm9yIHRoZSB0cmFpbmluZyBkYXRhIHVzaW5nIHRoZSBNQVBFXG5tYXBlKHRlc3RfZGF0YXNldCRVbXNhdHosIHByZWRfdGVzdClcbmBgYCJ9 -->
+<pre class="r"><code># Calculating the prediction for the test data using the best model according to the grid search
+pred_test &lt;- predict(svm_tune$best.model, test_dataset)
+# Calculating the prediction quality for the training data using the MAPE
+mape(test_dataset$Umsatz, pred_test)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="neuronales-netz" class="section level2">
+<h2>Neuronales Netz</h2>
+<div id="funktionsdefinitionen" class="section level3">
+<h3>Funktionsdefinitionen</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIycgVGl0bGUgRmFzdCBjcmVhdGlvbiBvZiBub3JtYWxpemVkIHZhcmlhYmxlc1xuIycgUXVpY2tseSBjcmVhdGUgbm9ybWFsaXplZCBjb2x1bW5zIGZyb20gbnVtZXJpYyB0eXBlIGNvbHVtbnMgaW4gdGhlIGlucHV0IGRhdGEuIFRoaXMgZnVuY3Rpb24gaXMgdXNlZnVsIGZvciBzdGF0aXN0aWNhbCBhbmFseXNpcyB3aGVuIHlvdSB3YW50IG5vcm1hbGl6ZWQgY29sdW1ucyByYXRoZXIgdGhhbiB0aGUgYWN0dWFsIGNvbHVtbnMuXG4jJ1xuIycgQHBhcmFtIC5kYXRhIEFuIG9iamVjdCB3aXRoIHRoZSBkYXRhIHNldCB5b3Ugd2FudCB0byBtYWtlIG5vcm1hbGl6ZWQgY29sdW1ucyBmcm9tLlxuIycgQHBhcmFtIG5vcm1fdmFsdWVzIERhdGFmcmFtZSBvZiBjb2x1bW4gbmFtZXMsIG1lYW5zLCBhbmQgc3RhbmRhcmQgZGV2aWF0aW9ucyB0aGF0IGlzIHVzZWQgdG8gY3JlYXRlIGNvcnJlc3BvbmRpbmcgbm9ybWFsaXplZCB2YXJpYWJsZXMgZnJvbS5cbiMnXG4jJyBAcmV0dXJuIEEgZGF0YS5mcmFtZSAob3IgdGliYmxlIG9yIGRhdGEudGFibGUsIGRlcGVuZGluZyBvbiBpbnB1dCBkYXRhIHR5cGUpIHdpdGggc2FtZSBudW1iZXIgb2Ygcm93cyBhbiBkY29sdW1ucyBhcyB0aGUgaW5wdXR0ZWQgZGF0YSwgb25seSB3aXRoIG5vcm1hbGl6ZWQgY29sdW1ucyBmb3IgdGhlIHZhcmlhYmxlcyBpbmRpY2F0ZWQgaW4gdGhlIG5vcm1fdmFsdWVzIGFyZ3VtZW50LlxuIycgQGV4cG9ydFxuIydcbiMnIEBleGFtcGxlc1xubm9ybV9jb2xzIDwtIGZ1bmN0aW9uICguZGF0YSwgbm9ybV92YWx1ZXMgPSBOVUxMKSB7XG4gIGZvciAoaSBpbiAxOm5yb3cobm9ybV92YWx1ZXMpICApIHtcbiAgICAuZGF0YVtbbm9ybV92YWx1ZXMkbmFtZVtpXV1dIDwtICguZGF0YVtbbm9ybV92YWx1ZXMkbmFtZVtpXV1dIC0gbm9ybV92YWx1ZXMkbWVhbltpXSkgLyBub3JtX3ZhbHVlcyRzZFtpXVxuICB9XG4gIHJldHVybiAoLmRhdGEpXG59XG5cblxuIycgVGl0bGUgQ3JlYXRpb24gb2YgYSBEYXRhZnJhbWUgaW5jbHVkaW5nIHRoZSBJbmZvcm1hdGlvbiB0byBTdGFuZGFyZGl6ZSBWYXJpYWJsZXNcbiMnIFRoaXMgZnVuY3Rpb24gaXMgbWVhbnQgdG8gYmUgdXNlZCBpbiBjb21iaW5hdGlvbiB3aXRoIHRoZSBmdW5jdGlvbiBub3JtX2NvbHNcbiMnXG4jJyBAcGFyYW0gLmRhdGEgQSBkYXRhIHNldCBpbmNsdWRpbmcgdGhlIHZhcmlhYmxlcyB5b3Ugd2FudCB0byBnZXQgdGhlIG1lYW5zIGFuZCBzdGFuZGFyZCBkZXZpYXRpb25zIGZyb20uXG4jJyBAcGFyYW0gc2VsZWN0X2NvbHVtbnMgQSB2ZWN0b3Igd2l0aCBhIGxpc3Qgb2YgdmFyaWFibGUgbmFtZXMgZm9yIHdoaWNoIHlvdSB3YW50IHRvIGdldCB0aGUgbWVhbnMgYW5kIHN0YW5kYXJkIGRldmlhdGlvbnMgZnJvbS5cbiMnXG4jJyBAcmV0dXJuIEEgZGF0YS5mcmFtZSAob3IgdGliYmxlIG9yIGRhdGEudGFibGUsIGRlcGVuZGluZyBvbiBpbnB1dCBkYXRhIHR5cGUpIGluY2x1ZGluZyB0aGUgbmFtZXMsIG1lYW5zLCBhbmQgc3RhbmRhcmQgZGV2aWF0aW9ucyBvZiB0aGUgdmFyaWFibGVzIGluY2x1ZGVkIGluIHRoZSBzZWxlY3RfY29sdW1ucyBhcmd1bWVudC5cbiMnIEBleHBvcnRcbiMnXG4jJyBAZXhhbXBsZXNcbmdldC5ub3JtX3ZhbHVlcyA8LSBmdW5jdGlvbiAoLmRhdGEsIHNlbGVjdF9jb2x1bW5zID0gTlVMTCkge1xuICByZXN1bHQgPC0gTlVMTFxuICBmb3IgKGNvbF9uYW1lIGluIHNlbGVjdF9jb2x1bW5zKSB7XG4gICAgbWVhbiA8LSBtZWFuKC5kYXRhW1tjb2xfbmFtZV1dLCBuYS5ybSA9IFRSVUUpXG4gICAgc2QgPC0gc2QoLmRhdGFbW2NvbF9uYW1lXV0sIG5hLnJtID0gVFJVRSlcbiAgICByZXN1bHQgPC0gcmJpbmQgKHJlc3VsdCwgYyhtZWFuLCBzZCkpXG4gIH1cbiAgcmVzdWx0IDwtIGFzLmRhdGEuZnJhbWUocmVzdWx0LCBzdHJpbmdzQXNGYWN0b3JzID0gRkFMU0UpXG4gIHJlc3VsdCA8LSBkYXRhLmZyYW1lIChzZWxlY3RfY29sdW1ucywgcmVzdWx0LCBzdHJpbmdzQXNGYWN0b3JzID0gRkFMU0UpXG4gIG5hbWVzKHJlc3VsdCkgPC0gYyhcIm5hbWVcIiwgXCJtZWFuXCIsIFwic2RcIilcbiAgcmV0dXJuIChyZXN1bHQpXG59XG5cbmBgYCJ9 -->
+<pre class="r"><code>#&#39; Title Fast creation of normalized variables
+#&#39; Quickly create normalized columns from numeric type columns in the input data. This function is useful for statistical analysis when you want normalized columns rather than the actual columns.
+#&#39;
+#&#39; @param .data An object with the data set you want to make normalized columns from.
+#&#39; @param norm_values Dataframe of column names, means, and standard deviations that is used to create corresponding normalized variables from.
+#&#39;
+#&#39; @return A data.frame (or tibble or data.table, depending on input data type) with same number of rows an dcolumns as the inputted data, only with normalized columns for the variables indicated in the norm_values argument.
+#&#39; @export
+#&#39;
+#&#39; @examples
+norm_cols &lt;- function (.data, norm_values = NULL) {
+  for (i in 1:nrow(norm_values)  ) {
+    .data[[norm_values$name[i]]] &lt;- (.data[[norm_values$name[i]]] - norm_values$mean[i]) / norm_values$sd[i]
+  }
+  return (.data)
+}
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KIA0KTGFkZW4gdm9uIFBhY2thZ2VzDQpgYGB7cn0NCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGRwbHlyKQ0KbGlicmFyeShnZ3Bsb3QyKQ0KbGlicmFyeShsdWJyaWRhdGUpDQpsaWJyYXJ5KGJyb29tKQ0KbGlicmFyeShNZXRyaWNzKQ0KYGBgDQoNCkxhZGVuIGRlciBDU1YtRGF0ZWluDQpgYGB7cn0NCnVtc2F0emRhdGVuX2dla3Vlcnp0IDwtIHJlYWRfY3N2KCJ1bXNhdHpkYXRlbl9nZWt1ZXJ6dC5jc3YiKQ0KDQpraXdvIDwtIHJlYWRfY3N2KCJraXdvLmNzdiIpDQoNCnNjaHVsZmVyaWVuIDwtIHJlYWRfY3N2KCJTY2h1bGZlcmllbi5jc3YiKQ0KDQpmZWllcnRhZ2UgPC0gcmVhZF9jc3YoIkZlaWVydGFnZS5jc3YiKQ0KDQp3ZXR0ZXIgPC0gcmVhZF9jc3YoIndldHRlci5jc3YiKQ0KYGBgDQoNCkludGVncmllcnVuZyBkZXIgV29jaGVudGFnZQ0KYGBge3J9DQp1bXNhdHpkYXRlbl9nZWt1ZXJ6dCR3b2NoZW50YWcgPC0gd2Vla2RheXModW1zYXR6ZGF0ZW5fZ2VrdWVyenQkRGF0dW0pDQoNCnVtc2F0emRhdGVuX2dla3Vlcnp0JHdvY2hlbnRhZyA8LSBmYWN0b3IodW1zYXR6ZGF0ZW5fZ2VrdWVyenQkd29jaGVudGFnLCBsZXZlbHM9YygiTW9udGFnIiwgIkRpZW5zdGFnIiwgIk1pdHR3b2NoIiwgIkRvbm5lcnN0YWciLCAiRnJlaXRhZyIsICJTYW1zdGFnIiwgIlNvbm50YWciKSkNCmBgYA0KDQpadXNhbW1lbmbDvGhydW5nIGRlciBEYXRlaW4genUgZWluZXIgVGFiZWxsZQ0KYGBge3J9DQpzYW1tbHVuZyA8LSBkcGx5cjo6ZnVsbF9qb2luKHVtc2F0emRhdGVuX2dla3Vlcnp0LHdldHRlcixieT0iRGF0dW0iKQ0Kc2FtbWx1bmcgPC0gZHBseXI6OmZ1bGxfam9pbihzYW1tbHVuZyxraXdvLGJ5PSJEYXR1bSIpDQpzYW1tbHVuZyA8LSBkcGx5cjo6ZnVsbF9qb2luKHNhbW1sdW5nLHNjaHVsZmVyaWVuLGJ5PSJEYXR1bSIpDQpzYW1tbHVuZyA8LSBkcGx5cjo6ZnVsbF9qb2luKHNhbW1sdW5nLGZlaWVydGFnZSxieT0iRGF0dW0iKQ0KYGBgDQoNCg0KYGBge3J9DQptb2QgPC0gbG0oVW1zYXR6IH4gd29jaGVudGFnLCBzYW1tbHVuZykNCnN1bW1hcnkobW9kKQ0KYGBgDQoNCg==</div>
+
+#&#39; Title Creation of a Dataframe including the Information to Standardize Variables
+#&#39; This function is meant to be used in combination with the function norm_cols
+#&#39;
+#&#39; @param .data A data set including the variables you want to get the means and standard deviations from.
+#&#39; @param select_columns A vector with a list of variable names for which you want to get the means and standard deviations from.
+#&#39;
+#&#39; @return A data.frame (or tibble or data.table, depending on input data type) including the names, means, and standard deviations of the variables included in the select_columns argument.
+#&#39; @export
+#&#39;
+#&#39; @examples
+get.norm_values &lt;- function (.data, select_columns = NULL) {
+  result &lt;- NULL
+  for (col_name in select_columns) {
+    mean &lt;- mean(.data[[col_name]], na.rm = TRUE)
+    sd &lt;- sd(.data[[col_name]], na.rm = TRUE)
+    result &lt;- rbind (result, c(mean, sd))
+  }
+  result &lt;- as.data.frame(result, stringsAsFactors = FALSE)
+  result &lt;- data.frame (select_columns, result, stringsAsFactors = FALSE)
+  names(result) &lt;- c(&quot;name&quot;, &quot;mean&quot;, &quot;sd&quot;)
+  return (result)
+}
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+</div>
+</div>
+<div id="datenaufbereitung" class="section level1">
+<h1>Datenaufbereitung</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWtvZGllcnVuZyB2b24ga2F0ZWdvcmllbGxlbiBWYXJpYWJsZW4gKHp1IER1bW15LVZhcmlhYmxlbilcbmR1bW15X2xpc3QgPC0gYyhcInZpZXdcIiwgXCJjb25kaXRpb25cIilcbmhvdXNlX3ByaWNpbmdfZHVtbXkgPSBkdW1teV9jb2xzKGhvdXNlX3ByaWNpbmcsIGR1bW15X2xpc3QpXG5cbiMgRGVmaW5pdGlvbiB2b24gVmFyaWFibGVubGlzdGVuIGbDvHIgZGllIER1bW1pZXMsIHVtIGRhcyBBcmJlaXRlbiBtaXQgZGllc2VuIHp1IGVybGVpY2h0ZXJuXG5jb25kaXRpb25fZHVtbWllcyA9IGMoJ2NvbmRpdGlvbl8xJywgJ2NvbmRpdGlvbl8yJywgJ2NvbmRpdGlvbl8zJywgJ2NvbmRpdGlvbl80JywgJ2NvbmRpdGlvbl81JylcbnZpZXdfZHVtbWllcyA9IGMoJ3ZpZXdfMCcsICd2aWV3XzEnLCAndmlld18yJywgJ3ZpZXdfMycsJ3ZpZXdfNCcpXG5cblxuIyBTdGFuZGFyZGlzaWVydW5nIGFsbGVyIEZlYXR1cmUgVmFyaWFibGVuIHVuZCBkZXIgTGFiZWwgVmFyaWFibGVcbm5vcm1fbGlzdCA8LSBjKFwicHJpY2VcIiwgXCJzcWZ0X2xvdFwiLCBcImJhdGhyb29tc1wiLCBcImdyYWRlXCIsIFwid2F0ZXJmcm9udFwiLCB2aWV3X2R1bW1pZXMsIGNvbmRpdGlvbl9kdW1taWVzKSAjIExpc3RlIGFsbGVyIFZhcmlhYmxlblxubm9ybV92YWx1ZXNfbGlzdCA8LSBnZXQubm9ybV92YWx1ZXMoaG91c2VfcHJpY2luZ19kdW1teSwgbm9ybV9saXN0KSAgICAjIEJlcmVjaG51bmcgZGVyIE1pdHRlbHdlcnRlIHVuZCBTdGQuLUFidy4gZGVyIFZhcmlhYmxlblxuaG91c2VfcHJpY2luZ19ub3JtIDwtIG5vcm1fY29scyhob3VzZV9wcmljaW5nX2R1bW15LCBub3JtX3ZhbHVlc19saXN0KSAjIFN0YW5kYXJkaXNpZXJ1bmcgZGVyIFZhcmlhYmxlblxuYGBgIn0= -->
+<pre class="r"><code># Rekodierung von kategoriellen Variablen (zu Dummy-Variablen)
+dummy_list &lt;- c(&quot;view&quot;, &quot;condition&quot;)
+house_pricing_dummy = dummy_cols(house_pricing, dummy_list)
+
+# Definition von Variablenlisten für die Dummies, um das Arbeiten mit diesen zu erleichtern
+condition_dummies = c(&#39;condition_1&#39;, &#39;condition_2&#39;, &#39;condition_3&#39;, &#39;condition_4&#39;, &#39;condition_5&#39;)
+view_dummies = c(&#39;view_0&#39;, &#39;view_1&#39;, &#39;view_2&#39;, &#39;view_3&#39;,&#39;view_4&#39;)
+
+
+# Standardisierung aller Feature Variablen und der Label Variable
+norm_list &lt;- c(&quot;price&quot;, &quot;sqft_lot&quot;, &quot;bathrooms&quot;, &quot;grade&quot;, &quot;waterfront&quot;, view_dummies, condition_dummies) # Liste aller Variablen
+norm_values_list &lt;- get.norm_values(house_pricing_dummy, norm_list)    # Berechnung der Mittelwerte und Std.-Abw. der Variablen
+house_pricing_norm &lt;- norm_cols(house_pricing_dummy, norm_values_list) # Standardisierung der Variablen</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="definition-der-feaure-variablen-und-der-label-variable" class="section level1">
+<h1>Definition der Feaure-Variablen und der Label-Variable</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBEZWZpbml0aW9uIGRlciBGZWF0dXJlcyAoZGVyIHVuYWJow6RuZ2lnZW4gVmFyaWFibGVuIGF1ZiBkZXJlbiBCYXNpcyBkaWUgVm9yaGVyc2FnZW4gZXJ6ZXVndCB3ZXJkZW4gc29sbGVuKVxuZmVhdHVyZXMgPSBjKCdzcWZ0X2xvdCcsICd3YXRlcmZyb250JywgJ2dyYWRlJywgJ2JhdGhyb29tcycsIHZpZXdfZHVtbWllcywgY29uZGl0aW9uX2R1bW1pZXMpXG4jIERlZmluaXRpb24gZGVyIExhYmVsLVZhcmlhYmxlIChkZXIgYWJoYWVuZ2lnZW4gVmFyaWFibGUsIGRpZSB2b3JoZXJnZXNhZ3Qgd2VyZGVuIHNvbGwpIHNvd2llXG5sYWJlbCA9ICdwcmljZV9ub3JtJ1xuYGBgIn0= -->
+<pre class="r"><code># Definition der Features (der unabhängigen Variablen auf deren Basis die Vorhersagen erzeugt werden sollen)
+features = c(&#39;sqft_lot&#39;, &#39;waterfront&#39;, &#39;grade&#39;, &#39;bathrooms&#39;, view_dummies, condition_dummies)
+# Definition der Label-Variable (der abhaengigen Variable, die vorhergesagt werden soll) sowie
+label = &#39;price_norm&#39;</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="definition-von-trainings--und-testdatensatz" class="section level1">
+<h1>Definition von Trainings- und Testdatensatz</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBadWZhbGxzesOkaGxlciBzZXR6ZW4sIHVtIGRpZSB6dWbDpGxsaWdlIFBhcnRpdGlvbmllcnVuZyBiZWkgamVkZW0gRHVyY2hsYXVmIGdsZWljaCB6dSBoYWx0ZW5cbnNldC5zZWVkKDEpXG4jIEJlc3RpbW11bmcgZGVyIEluZGl6ZXMgZGVzIFRyYWluaW5zZGF0ZW5zYXR6ZXNcbnRyYWluX2luZCA8LSBzYW1wbGUoc2VxX2xlbihucm93KGhvdXNlX3ByaWNpbmdfbm9ybSkpLCBzaXplID0gZmxvb3IoMC44MCAqIG5yb3coaG91c2VfcHJpY2luZ19ub3JtKSkpXG5cbiMgVGVpbGVuIGluIFRyYWluaW5ncy0gdW5kIFRlc3RkYXRlbnNhdHpcbnRyYWluX2RhdGFzZXQgPSBob3VzZV9wcmljaW5nX25vcm1bdHJhaW5faW5kLCBmZWF0dXJlc11cbnRlc3RfZGF0YXNldCA9IGhvdXNlX3ByaWNpbmdfbm9ybVstdHJhaW5faW5kLCBmZWF0dXJlc11cblxuIyBTZWxla3Rpb24gZGVyIFZhcmlhYmxlLCBkaWUgYWxzIExhYmVsIGRlZmluaWVydCB3dXJkZVxudHJhaW5fbGFiZWxzID0gaG91c2VfcHJpY2luZ19ub3JtW3RyYWluX2luZCwgbGFiZWxdXG50ZXN0X2xhYmVscyA9IGhvdXNlX3ByaWNpbmdfbm9ybVstdHJhaW5faW5kLCBsYWJlbF1cbmBgYCJ9 -->
+<pre class="r"><code># Zufallszähler setzen, um die zufällige Partitionierung bei jedem Durchlauf gleich zu halten
+set.seed(1)
+# Bestimmung der Indizes des Traininsdatensatzes
+train_ind &lt;- sample(seq_len(nrow(house_pricing_norm)), size = floor(0.80 * nrow(house_pricing_norm)))
+
+# Teilen in Trainings- und Testdatensatz
+train_dataset = house_pricing_norm[train_ind, features]
+test_dataset = house_pricing_norm[-train_ind, features]
+
+# Selektion der Variable, die als Label definiert wurde
+train_labels = house_pricing_norm[train_ind, label]
+test_labels = house_pricing_norm[-train_ind, label]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KIA0KIyBFaW5iaW5kZW4gYmVuw7Z0aWd0ZXIgQmlibGlvdGhla2VuDQpgYGB7cn0NCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGdncGxvdDIpDQpsaWJyYXJ5KGx1YnJpZGF0ZSkNCmxpYnJhcnkoTWV0cmljcykNCmxpYnJhcnkoZTEwNzEpDQpsaWJyYXJ5KGRwbHlyKQ0KbGlicmFyeShicm9vbSkNCmxpYnJhcnkoZmFzdER1bW1pZXMpDQpgYGANCg0KIyBJbnN0YWxsYXRpb24gdm9uIFB5dGhvbiB1bmQgZGVyIGbDvHIgVGVuc29yRmxvdyBiZW7DtnRpZ3RlbiBQYWtldGUgKG51ciBlaW5tYWxpZyBuw7Z0aWcpDQpgYGB7cn0NCmluc3RhbGwucGFja2FnZXMoInJldGljdWxhdGUiKQ0KbGlicmFyeShyZXRpY3VsYXRlKQ0KDQojIEluc3RhbGxhdGlvbiB2b24gbWluaWNvbmRhIChmYWxscyBuaWNodCB2b3JoYW5kZW4pDQppbnN0YWxsX21pbmljb25kYSgpDQoNCiMgQW5sZWdlbiBlaW5lciBzcGV6aWVsbGVuIFB5dGhvbiBVbWdlYnVuZw0KY29uZGFfY3JlYXRlKCJyLXJldGljdWxhdGUiKQ0KDQojIEluc3RhbGxpZXJlbiBkZXIgUGFrZXRlIGluIGRlciBhbmdlbGVndGVuIFVtZ2VidW5nDQpjb25kYV9pbnN0YWxsKCJyLXJldGljdWxhdGUiLCAicGFuZGFzIikNCmNvbmRhX2luc3RhbGwoInItcmV0aWN1bGF0ZSIsICJudW1weSIpDQpjb25kYV9pbnN0YWxsKCJyLXJldGljdWxhdGUiLCAidGVuc29yZmxvdyIpDQoNCiMgVmVyd2VuZGVuIGRlciBzcGV6aWVsbGVuIFB5dGhvbiBVbWdlYnVuZyBkaWUgenV2b3IgZXJzdGVsbHQgd3VyZGUNCnVzZV9jb25kYWVudigici1yZXRpY3VsYXRlIikNCmBgYA0KDQojIEVpbmxlc2VuIGRlciBDU1YtRGF0ZWluDQpgYGB7cn0NClVtc2F0emRhdGVuIDwtIHJlYWRfY3N2KCJ1bXNhdHpkYXRlbl9nZWt1ZXJ6dC5jc3YiKQ0KDQpLaXdvIDwtIHJlYWRfY3N2KCJraXdvLmNzdiIpDQoNCkZlaWVydGFnZSA8LSByZWFkX2NzdigiRmVpZXJ0YWdlLmNzdiIpDQoNClNjaHVsZmVyaWVuIDwtIHJlYWRfY3N2KCJTY2h1bGZlcmllbi5jc3YiKQ0KDQpXZXR0ZXIgPC0gcmVhZF9jc3YoIndldHRlci5jc3YiKQ0KYGBgDQoNCiMgSW50ZWdyaWVydW5nIGRlciBXb2NoZW50YWdlIGluIGRpZSBEYXRlaSBVbXNhdHpkYXRlbg0KYGBge3J9DQpVbXNhdHpkYXRlbiRXb2NoZW50YWcgPC0gd2Vla2RheXMoVW1zYXR6ZGF0ZW4kRGF0dW0pDQoNCiMgVW13YW5kbHVuZyB2b24gJ3dvY2hlbnRhZyIgaW4gZWluZSBGYWt0b3ItVmFyaWFibGUgbWl0IGVpbmVyIHZvcmdlZ2ViZW4gU29ydGllcnVuZyBkZXIgTGV2ZWwgKEthdGVnb3JpZW4pDQpVbXNhdHpkYXRlbiRXb2NoZW50YWcgPC0gZmFjdG9yKFVtc2F0emRhdGVuJFdvY2hlbnRhZywgbGV2ZWxzPWMoIk1vbnRhZyIsICJEaWVuc3RhZyIsICJNaXR0d29jaCIsICJEb25uZXJzdGFnIiwgIkZyZWl0YWciLCAiU2Ftc3RhZyIsICJTb25udGFnIikpDQpgYGANCg0KIyBadXNhbW1lbmbDvGhydW5nIGRlciBEYXRlaW4genUgZWluZXIgVGFiZWxsZQ0KYGBge3J9DQpTYW1tbHVuZyA8LSBkcGx5cjo6ZnVsbF9qb2luKFVtc2F0emRhdGVuLFdldHRlcixieT0iRGF0dW0iKQ0KU2FtbWx1bmcgPC0gZHBseXI6OmZ1bGxfam9pbihTYW1tbHVuZyxLaXdvLGJ5PSJEYXR1bSIpDQpTYW1tbHVuZyA8LSBkcGx5cjo6ZnVsbF9qb2luKFNhbW1sdW5nLFNjaHVsZmVyaWVuLGJ5PSJEYXR1bSIpDQpTYW1tbHVuZyA8LSBkcGx5cjo6ZnVsbF9qb2luKFNhbW1sdW5nLEZlaWVydGFnZSxieT0iRGF0dW0iKQ0KYGBgDQoNCiMjIEF1ZnRlaWx1bmcgZGVzIERhdGVuc2F0emVzIGluIFRyYWluaW5ncy0gdW5kIFRlc3RkYXRlbg0KYGBge3J9DQojIFp1ZmFsbHN6w6RobGVyIHNldHplbiAodW0gZGllIHp1ZsOkbGxpZ2UgUGFydGl0aW9uaWVydW5nIGJlaSBqZWRlbSBEdXJjaGxhdWYgZ2xlaWNoIHp1IGhhbHRlbikNCnNldC5zZWVkKDEpDQoNCiMgWnVmw6RsbGlnZSBaaWVodW5nIEluZGl6ZXMgZsO8ciBkaWUgWmVpbGVuIGRlcyBEYXRlbnNhdHplcywgZGllIGRlbSBUcmFpbmluc2RhdGVuc2F0eiB6dWdlb3JkbmV0IHdlcmRlbg0KaW5kaWNlc190cmFpbiA8LSBzYW1wbGUoc2VxX2xlbihucm93KFNhbW1sdW5nKSksIHNpemUgPSBmbG9vcigwLjgwICogbnJvdyhTYW1tbHVuZykpKQ0KDQojIERlZmluaXRpb24gZGVzIFRyYWluaW5ncy0gdW5kIFRlc3RkYXRlbnNhdHogZHVyY2ggU2VsZWt0aW9uIGJ6dy4gRGVzZWxla3Rpb24gZGVyIGVudHNwcmVjaGVuZGVuIERhdGVuemVpbGVuDQp0cmFpbl9kYXRhc2V0IDwtIHRyYWluX2RhdGFzZXRfb3JnIDwtIFNhbW1sdW5nW2luZGljZXNfdHJhaW4sIF0NCnRlc3RfZGF0YXNldCA8LSBTYW1tbHVuZ1staW5kaWNlc190cmFpbiwgXQ0KYGBgDQoNCiMgVm9yaGVyc2FnZSBkdXJjaCBXZXR0ZXJkYXRlbiMNCmBgYHtyfQ0KbW9kIDwtIGxtIChVbXNhdHogfiBUZW1wZXJhdHVyICsgV2luZGdlc2Nod2luZGlna2VpdCArIGFzLmZhY3RvcihXZXR0ZXJjb2RlKSArIGFzLmZhY3RvciAoQmV3b2Vsa3VuZyksU2FtbWx1bmcpIA0Kc3VtbWFyeShtb2QpDQojS2VpbiBzaWduaWZpa2FudGVyIEVpbmZsdXNzIGRlciBXaW5kZ2VzY2h3aW5kaWdrZWl0IGF1ZiBVbXNhdHogKGV2ZW50dWVsbCB1LWbDtnJtaWdlbiBFZmZla3QgcHLDvGZlbikNCiNTaWduaWZpa2FudCBwb3NpdGl2ZXIgWnVzYW1tZW5oYW5nIHp3aXNjaGVuIFRlbXBlcmF0dXIgdW5kIFVtc2F0ejogQmVpIGjDtmhlcmVuIFRlbXBlcmF0dXJlbiBpc3QgZGVyIFVtc2F0eiBow7ZoZXIjIA0KI1NpZ25pZmlrYW50IGdlcmluZ2VyZXIgVW1zYXR6IGJlaSBXZXR0ZXJjb2RlIDcxIC0tPiAgQmVpIGR1cmNoZ2VoZW5kZW0gbGVpY2h0ZW4gU2NobmVlZmFsbCB3ZW5pZ2VyIGdla2F1ZnQjDQojQmV3w7Zsa3VuZyBDb2RlIDEgc2FndCBVbXNhdHogc2lnbmlmaWthbnQgdm9yaGVyOiBow7ZoZXJlciBVbXNhdHogYmVpIHdvbGtlbmxvc2VtIEhpbW1lbCwgZXZ0bCBCaWxkdW5nIGRpY2hvdG9tZXIgVmFyaWFibGUgc29ubmlnIHZzLiBiZXfDtmxrdCMjIw0KYGBgDQoNCiMgVm9oZXJzYWdlIGR1cmNoIFdhcmVuZ3J1cHBlIw0KYGBge3J9DQptb2QgPC1sbSAoVW1zYXR6IH4gYXMuZmFjdG9yIChXYXJlbmdydXBwZSksU2FtbWx1bmcpIA0Kc3VtbWFyeSAobW9kKQ0KI0VpbnplbG5lIFdhcmVuZ3J1cHBlbiBpbiBzaWduaWZpa2FudGVtIFp1c2FtbWVuaGFuZyBtaXQgVW1zYXR6IChsb2dpc2NoLCBBdWZuYWhtZSBudXIgYmVkaW5ndCBzaW5udm9sbCkNCiNXYXJlbmdydXBwZSAyLDMgdW5kIDUgc2FnZW4gaG9oZW4gVW1zYXR6IHZvcmhlciwgV2FyZW5ncnVwcGUgNCB1bmQgNiAoa29uZGl0b3JlaSB1bmQgU2Fpc29uYnJvdCkga29ycmVsaWVyZW4gc2lnbmlmaWthbnQgbmVnYXRpdiBtaXQgVW1zYXR6DQpgYGANCg0KIyBWb2hlcnNhZ2UgZHVyY2ggRmVyaWVuIyMjDQpgYGB7cn0NCm1vZCA8LSBsbSAoVW1zYXR6IH4gRmVyaWVuLCBTYW1tbHVuZykNCnN1bW1hcnkgKG1vZCkNCiMjI1NpZ25pZmlrYW50IGjDtmhlcmVyIFVtc2F0eiBpbiBTb21tZXJmZXJpZW4jIyMNCmBgYA0KDQojIFZvcmhlcnNhZ2UgZHVyY2ggRmVpZXJ0YWdlDQpgYGB7cn0NCm1vZCA8LSBsbSAoVW1zYXR6IH4gRmVpZXJ0YWcsIFNhbW1sdW5nKQ0Kc3VtbWFyeSAobW9kKQ0KIyMja2VpbiBzaWduaWZpa2FudGVyIEVpbmZsdXNzIGRlciBGZWllcnRhZ2UsIA0KIyNldmVudHVlbGwgUHLDvGZ1bmcgaW4gQWJow6RuZ2lna2VpdCB2b24gRmVyaWVuIHVuZCBsYW5nZW0gV29jaGVuZW5kZSMjIw0KYGBgDQoNCiMgVm9yaGVyc2FnZSBkdXJjaCBLaWVsZXIgV29jaGUNCmBgYHtyfQ0KbW9kIDwtbG0gKFVtc2F0eiB+IEtpZWxlcldvY2hlLCBTYW1tbHVuZykNCnN1bW1hcnkgKG1vZCkNCiNLaWVsZXIgV29jaGUgd2lya3Qgc2ljaCBzaWduaWZpa2FudCBwb3NpdGl2IGF1ZiBVbXNhdHogYXVzLCBzdGFya2VyIEVmZmVrdCoqDQpgYGANCg0KIyBWb3JoZXJzYWdlIGR1cmNoIFdvY2hlbnRhZw0KYGBge3J9DQptb2QgPC1sbSAoVW1zYXR6IH4gYXMuZmFjdG9yKFdvY2hlbnRhZyksIFVtc2F0emRhdGVuKQ0Kc3VtbWFyeShtb2QpDQojU2lnbmlmaWthbnQgZXJow7ZodGVyIFVtc2F0eiBhbSBXb2NoZW5lbmRlIyMjDQoNCiMjI0Zheml0OiBiZWRldXRzYW1lIEhhdXB0ZWZmZWt0ZSMjIzoNCg0KIyNwb3NpdGl2Og0KDQojI0tpZWxlciBXb2NoZSMjDQojI1dvY2hlbmVuZGUjIw0KIyNTb21tZXJmZXJpZW4jIw0KIyNTb25uaWdlcyBXZXR0ZXIjIw0KI1ZlcmthdWYgQnJvdCwgQnLDtnRjaGVuIHVuZCBDcm9pc3NhbnRzIyMNCiMjSG9oZSBUZW1wZXJhdHVyZW4jIw0KDQojI25lZ2F0aXYNCiMjbGVpY2h0ZXIgU2NobmVlZmFsbA0KIyNWZXJrYXVmIHZvbiBTYWlzb25icm90IHVuZCBLb25kaXRvcmVpd2FyZSAoZXZ0bC4gZ2VyaW5nZXJlIE1hcmdlKQ0KYGBgDQoNCiMgVm9yaGVyc2FnZSBkdXJjaCBXZXR0ZXJkYXRlbiMNCmBgYHtyfQ0KbW9kIDwtIGxtIChVbXNhdHogfiBXaW5kZ2VzY2h3aW5kaWdrZWl0ICsgVGVtcGVyYXR1cixTYW1tbHVuZykgDQpzdW1tYXJ5KG1vZCkNCmBgYA0KDQojIEVzdGltYXRpbmcgKFRyYWluaW5nKSBNb2RlbHMNCiMgTnVyIHp1ZsOkbGxpZ2UgS29tYmluYXRpb24gdm9uIEZha3RvcmVuDQojIFRvIERvOiBTeXN0ZW1hdGlzaWVydW5nIGRlciBGYWt0b3JlbiB1bmQgSW50ZWdyYXRpb24gdm9uIFdvY2hlbnRhZ2VzLCBGZWllcnRhZ2VuIHVuZCBGZXJpZW4jIyMNCmBgYHtyfQ0KbW9kMSA8LSBsbShVbXNhdHogfiBUZW1wZXJhdHVyLCBTYW1tbHVuZykNCm1vZDIgPC0gbG0oVW1zYXR6IH4gVGVtcGVyYXR1ciArIFdpbmRnZXNjaHdpbmRpZ2tlaXQsIFNhbW1sdW5nKQ0KbW9kMyA8LSBsbShVbXNhdHogfiBUZW1wZXJhdHVyICsgV2luZGdlc2Nod2luZGlna2VpdCArIGFzLmZhY3RvcihCZXdvZWxrdW5nKSwgU2FtbWx1bmcpDQptb2Q0IDwtIGxtKFVtc2F0eiB+IFRlbXBlcmF0dXIgKyBXaW5kZ2VzY2h3aW5kaWdrZWl0ICsgYXMuZmFjdG9yKEJld29lbGt1bmcpICsgYXMuZmFjdG9yKFdldHRlcmNvZGUpLCBTYW1tbHVuZykNCm1vZDUgPC0gbG0oVW1zYXR6IH4gVGVtcGVyYXR1ciArIFdpbmRnZXNjaHdpbmRpZ2tlaXQgKyBhcy5mYWN0b3IoQmV3b2Vsa3VuZykgKyBhcy5mYWN0b3IoV2V0dGVyY29kZSkgKyBhcy5mYWN0b3IoV2FyZW5ncnVwcGUpLCBTYW1tbHVuZykNCm1vZDYgPC0gbG0oVW1zYXR6IH4gVGVtcGVyYXR1ciArIFdpbmRnZXNjaHdpbmRpZ2tlaXQgKyBhcy5mYWN0b3IoQmV3b2Vsa3VuZykgKyBhcy5mYWN0b3IoV2V0dGVyY29kZSkgKyBhcy5mYWN0b3IoV2FyZW5ncnVwcGUpICsgS2llbGVyV29jaGUsIFNhbW1sdW5nKQ0KbW9kNyA8LSBsbShVbXNhdHogfiBUZW1wZXJhdHVyICsgV2luZGdlc2Nod2luZGlna2VpdCArIFdpbmRnZXNjaHdpbmRpZ2tlaXQqVGVtcGVyYXR1ciArIGFzLmZhY3RvcihCZXdvZWxrdW5nKSArIGFzLmZhY3RvcihXZXR0ZXJjb2RlKSArIGFzLmZhY3RvcihXYXJlbmdydXBwZSkgKyBLaWVsZXJXb2NoZSAsIFNhbW1sdW5nKQ0KYGBgDQoNCmBgYHtyfQ0Kc3VtbWFyeShtb2QxKQ0Kc3VtbWFyeSAobW9kMikNCnN1bW1hcnkobW9kMykNCnN1bW1hcnkobW9kMykNCnN1bW1hcnkobW9kNCkNCnN1bW1hcnkobW9kNSkNCnN1bW1hcnkobW9kNikNCnN1bW1hcnkobW9kNykNCmBgYA0KDQpgYGB7cn0NCmdsYW5jZShtb2QxKQ0KZ2xhbmNlIChtb2QyKQ0KZ2xhbmNlIChtb2QzKQ0KZ2xhbmNlIChtb2Q0KQ0KZ2xhbmNlIChtb2Q1KQ0KZ2xhbmNlIChtb2Q2KQ0KZ2xhbmNlIChtb2Q3KQ0KYGBgDQoNCiMgUHJlcGFyYXRpb24gb2YgTW9kZWwgUmVzdWx0cw0KYGBge3J9DQpyYmluZChnbGFuY2UobW9kMSksIGdsYW5jZShtb2QyKSwgZ2xhbmNlKG1vZDMpLCBnbGFuY2UobW9kNCksIGdsYW5jZShtb2Q1KSwgZ2xhbmNlKG1vZDYpLCBnbGFuY2UobW9kNykpDQpgYGANCg0KI1ZvcmhlcnNhZ2V2ZXJiZXNzZXJ1bmcgdm9yIGFsbGVtIGR1cmNoIEF1Zm5haG1lIHZvbiBXYXJlbmdydXBwZSB1bmQgS2llbGVyIFdvY2hlLA0KI0F1Zm5haG1lIHZvbiBXYXJlbmdydXBwZSBqZWRvY2ggbnVyIGJlZGluZ3Qgc2lubnZvbGwjDQojS2llbGVyIFdvY2hlIGFscyBzZWhyIHN0YXJrZXIgVW1zYXR6dHJlaWJlciMjIw0KIyNUbyBEbzogVW5iZWRpbmd0IFdvY2hlbnRhZyB1bmQgRmVyaWVuIGludGVyZ2llcmVuLCBkYSBzaWduLiBLb3JyZWxhdGlvbiBtaXQgVW1zYXR6IGluIGVpbmZhY2hlciBSZWdyZXNzaW9uIw0KYGBge3J9DQojIE1vZGVsIFByZWRpY3Rpb24gUXVhbGl0eSBmb3IgdGhlIFRyYWluaW5nIERhdGEgVXNpbmcgdGhlIE1lYW4gQWJzb2x1dGUgRXJyb3INCnJiaW5kKG1hZShTYW1tbHVuZyRVbXNhdHosIHByZWRpY3QobW9kMSkpLA0KICAgICAgbWFlKFNhbW1sdW5nJFVtc2F0eiwgcHJlZGljdChtb2QyKSksDQogICAgICBtYWUoU2FtbWx1bmckVW1zYXR6LCBwcmVkaWN0KG1vZDMpKSwNCiAgICAgIG1hZShTYW1tbHVuZyRVbXNhdHosIHByZWRpY3QobW9kNCkpLA0KICAgICAgbWFlKFNhbW1sdW5nJFVtc2F0eiwgcHJlZGljdChtb2Q1KSksDQogICAgICBtYWUoU2FtbWx1bmckVW1zYXR6LCBwcmVkaWN0KG1vZDYpKSwNCiAgICAgIG1hZShTYW1tbHVuZyRVbXNhdHosIHByZWRpY3QobW9kNykpKQ0KYGBgDQoNCmBgYHtyfQ0KIyBNb2RlbCBQcmVkaWN0aW9uIFF1YWxpdHkgZm9yIHRoZSBUcmFpbmluZyBEYXRhIFVzaW5nIHRoZSBNZWFuIEFic29sdXRlIFBlcmNlbnRhZ2UgRXJyb3INCnJiaW5kKG1hcGUoU2FtbWx1bmckVW1zYXR6LCBwcmVkaWN0KG1vZDEpKSwNCiAgICAgICBtYXBlKFNhbW1sdW5nJFVtc2F0eiwgcHJlZGljdChtb2QyKSksDQogICAgICAgbWFwZShTYW1tbHVuZyRVbXNhdHosIHByZWRpY3QobW9kMykpLA0KICAgICAgIG1hcGUoU2FtbWx1bmckVW1zYXR6LCBwcmVkaWN0KG1vZDQpKSwNCiAgICAgICBtYXBlKFNhbW1sdW5nJFVtc2F0eiwgcHJlZGljdChtb2Q1KSksDQogICAgICAgbWFwZShTYW1tbHVuZyRVbXNhdHosIHByZWRpY3QobW9kNikpLA0KICAgICAgIG1hcGUoU2FtbWx1bmckVW1zYXR6LCBwcmVkaWN0KG1vZDcpKSkNCmBgYA0KDQpgYGB7cn0NCiMgTW9kZWwgUHJlZGljdGlvbiBRdWFsaXR5IGZvciB0aGUgKFVua25vd24pIFRlc3QgRGF0YSBVc2luZyB0aGUgTWVhbiBBYnNvbHV0ZSBQZXJjZW50YWdlIEVycm9yDQpyYmluZChtYXBlKFNhbW1sdW5nX3Rlc3QkVW1zYXR6LCBwcmVkaWN0KG1vZDEsIG5ld2RhdGE9U2FtbWx1bmdfdGVzdCkpLA0KICAgICAgbWFwZShTYW1tbHVuZ190ZXN0JFVtc2F0eiwgcHJlZGljdChtb2QyLCBuZXdkYXRhPVNhbW1sdW5nX3Rlc3QpKSwNCiAgICAgIG1hcGUoU2FtbWx1bmdfdGVzdCRVbXNhdHosIHByZWRpY3QobW9kMywgbmV3ZGF0YT1TYW1tbHVuZ190ZXN0KSksDQogICAgICBtYXBlKFNhbW1sdW5nX3Rlc3QkVW1zYXR6LCBwcmVkaWN0KG1vZDQsIG5ld2RhdGE9U2FtbWx1bmdfdGVzdCkpLA0KICAgICAgbWFwZShTYW1tbHVuZ190ZXN0JFVtc2F0eiwgcHJlZGljdChtb2Q1LCBuZXdkYXRhPVNhbW1sdW5nX3Rlc3QpKSwNCiAgICAgIG1hcGUoU2FtbWx1bmdfdGVzdCRVbXNhdHosIHByZWRpY3QobW9kNiwgbmV3ZGF0YT1TYW1tbHVuZ190ZXN0KSkpDQpgYGANCg0KIyMgRGF0YSBQcmVwYXJhdGlvbg0KYGBge3J9DQojIFVuY29tbWVudCB0aGUgZm9sbG93aW5nIGxpbmUgdG8gY2hlY2sgdGhlIGNvcnJlY3RuZXNzIG9mIHRoZSBjb2RlIHdpdGggYSBzbWFsbCAoYW5kIGNvbXB1dGF0aW9uYWxseSBmYXN0KSB0cmFpbmluZyBkYXRhIHNldA0KdHJhaW5fZGF0YXNldCA8LSBzYW1wbGVfZnJhYyh0cmFpbl9kYXRhc2V0X29yZywgLjEwKQ0KYGBgDQoNCiMjIFRyYWluaW5nIHRoZSBTVk0NCmBgYHtyfQ0KIyBFc3RpbWF0aW9uIG9mIGFuIFNWTSB3aXRoIG9wdGltaXplZCB3ZWlnaHRpbmcgcGFyYW1ldGVycyBhbmQgZ2l2ZW4gc3RhbmRhcmQgaHlwZXIgcGFyYW1ldGVycw0KIyBUeXBpY2FsbHkgbm90IHVzZWQ7IGluc3RlYWQsIHRoZSBmdW5jdGlvbiBzdm1fdHVuZSBpcyB1c2VkIGluIG9yZGVyIHRvIGFsc28gZ2V0IGEgbW9kZWwgd2l0aCBvcHRpbWl6ZWQgaHlwZXIgcGFyYW1ldGVycw0KbW9kZWxfc3ZtIDwtIHN2bShVbXNhdHogfiBXb2NoZW50YWcsIHRyYWluX2RhdGFzZXQpDQpgYGANCg0KYGBge3J9DQojIEVzdGltYXRpb24gb2YgdmFyaW91cyBTVk0gKGVhY2ggd2l0aCBvcHRpbWl6ZWQgd2VpZ2h0aW5nIHBhcmFtZXRlcnMpIHVzaW5nIHN5c3RlbWF0aWNhbGx5IHZhcmllZCBoeXBlciBwYXJhbWV0ZXJzICh0eXBpY2FsbHkgY2FsbGVkICdncmlkIHNlYXJjaCcgYXBwcm9hY2gpIGFuZCBjcm9zcyB2YWxpZGF0aW9uDQojIHRoZSByZXN1bHRpbmcgb2JqZWN0IGluY2x1ZGVzIHRoZSBvcHRpbWFsIG1vZGVsIGluIHRoZSBlbGVtZW50IG5hbWVkICdiZXN0Lm1vZGVsJw0Kc3ZtX3R1bmUgPC0gdHVuZShzdm0sIFVtc2F0eiB+IFdvY2hlbnRhZyArIEJld29lbGt1bmcgKyBUZW1wZXJhdHVyICsgRmVyaWVuLCBkYXRhPXRyYWluX2RhdGFzZXQsDQogICAgICAgICAgICAgICAgIHJhbmdlcyA9IGxpc3QoZXBzaWxvbiA9IHNlcSgwLjIsMSwwLjEpLCBjb3N0ID0gMl4oMjozKSkpDQpgYGANCg0KIyMgQ2hlY2tpbmcgdGhlIFByZWRpY3Rpb24gUXVhbGl0eQ0KYGBge3J9DQojIENhbGN1bGF0aW5nIHRoZSBwcmVkaWN0aW9uIGZvciB0aGUgdHJhaW5pbmcgZGF0YSB1c2luZyB0aGUgYmVzdCBtb2RlbCBhY2NvcmRpbmcgdG8gdGhlIGdyaWQgc2VhcmNoDQpwcmVkX3RyYWluIDwtIHByZWRpY3Qoc3ZtX3R1bmUkYmVzdC5tb2RlbCwgdHJhaW5fZGF0YXNldCkNCiMgQ2FsY3VsYXRpbmcgdGhlIHByZWRpY3Rpb24gcXVhbGl0eSBmb3IgdGhlIHRyYWluaW5nIGRhdGEgdXNpbmcgdGhlIE1BUEUNCm1hcGUodHJhaW5fZGF0YXNldCRwcmljZSwgcHJlZF90cmFpbikNCmBgYA0KDQpgYGB7cn0NCiMgQ2FsY3VsYXRpbmcgdGhlIHByZWRpY3Rpb24gZm9yIHRoZSB0ZXN0IGRhdGEgdXNpbmcgdGhlIGJlc3QgbW9kZWwgYWNjb3JkaW5nIHRvIHRoZSBncmlkIHNlYXJjaA0KcHJlZF90ZXN0IDwtIHByZWRpY3Qoc3ZtX3R1bmUkYmVzdC5tb2RlbCwgdGVzdF9kYXRhc2V0KQ0KIyBDYWxjdWxhdGluZyB0aGUgcHJlZGljdGlvbiBxdWFsaXR5IGZvciB0aGUgdHJhaW5pbmcgZGF0YSB1c2luZyB0aGUgTUFQRQ0KbWFwZSh0ZXN0X2RhdGFzZXQkVW1zYXR6LCBwcmVkX3Rlc3QpDQpgYGANCg0KIyMgTmV1cm9uYWxlcyBOZXR6DQojIyMgRnVua3Rpb25zZGVmaW5pdGlvbmVuICMjIw0KYGBge3J9DQojJyBUaXRsZSBGYXN0IGNyZWF0aW9uIG9mIG5vcm1hbGl6ZWQgdmFyaWFibGVzDQojJyBRdWlja2x5IGNyZWF0ZSBub3JtYWxpemVkIGNvbHVtbnMgZnJvbSBudW1lcmljIHR5cGUgY29sdW1ucyBpbiB0aGUgaW5wdXQgZGF0YS4gVGhpcyBmdW5jdGlvbiBpcyB1c2VmdWwgZm9yIHN0YXRpc3RpY2FsIGFuYWx5c2lzIHdoZW4geW91IHdhbnQgbm9ybWFsaXplZCBjb2x1bW5zIHJhdGhlciB0aGFuIHRoZSBhY3R1YWwgY29sdW1ucy4NCiMnDQojJyBAcGFyYW0gLmRhdGEgQW4gb2JqZWN0IHdpdGggdGhlIGRhdGEgc2V0IHlvdSB3YW50IHRvIG1ha2Ugbm9ybWFsaXplZCBjb2x1bW5zIGZyb20uDQojJyBAcGFyYW0gbm9ybV92YWx1ZXMgRGF0YWZyYW1lIG9mIGNvbHVtbiBuYW1lcywgbWVhbnMsIGFuZCBzdGFuZGFyZCBkZXZpYXRpb25zIHRoYXQgaXMgdXNlZCB0byBjcmVhdGUgY29ycmVzcG9uZGluZyBub3JtYWxpemVkIHZhcmlhYmxlcyBmcm9tLg0KIycNCiMnIEByZXR1cm4gQSBkYXRhLmZyYW1lIChvciB0aWJibGUgb3IgZGF0YS50YWJsZSwgZGVwZW5kaW5nIG9uIGlucHV0IGRhdGEgdHlwZSkgd2l0aCBzYW1lIG51bWJlciBvZiByb3dzIGFuIGRjb2x1bW5zIGFzIHRoZSBpbnB1dHRlZCBkYXRhLCBvbmx5IHdpdGggbm9ybWFsaXplZCBjb2x1bW5zIGZvciB0aGUgdmFyaWFibGVzIGluZGljYXRlZCBpbiB0aGUgbm9ybV92YWx1ZXMgYXJndW1lbnQuDQojJyBAZXhwb3J0DQojJw0KIycgQGV4YW1wbGVzDQpub3JtX2NvbHMgPC0gZnVuY3Rpb24gKC5kYXRhLCBub3JtX3ZhbHVlcyA9IE5VTEwpIHsNCiAgZm9yIChpIGluIDE6bnJvdyhub3JtX3ZhbHVlcykgICkgew0KICAgIC5kYXRhW1tub3JtX3ZhbHVlcyRuYW1lW2ldXV0gPC0gKC5kYXRhW1tub3JtX3ZhbHVlcyRuYW1lW2ldXV0gLSBub3JtX3ZhbHVlcyRtZWFuW2ldKSAvIG5vcm1fdmFsdWVzJHNkW2ldDQogIH0NCiAgcmV0dXJuICguZGF0YSkNCn0NCg0KDQojJyBUaXRsZSBDcmVhdGlvbiBvZiBhIERhdGFmcmFtZSBpbmNsdWRpbmcgdGhlIEluZm9ybWF0aW9uIHRvIFN0YW5kYXJkaXplIFZhcmlhYmxlcw0KIycgVGhpcyBmdW5jdGlvbiBpcyBtZWFudCB0byBiZSB1c2VkIGluIGNvbWJpbmF0aW9uIHdpdGggdGhlIGZ1bmN0aW9uIG5vcm1fY29scw0KIycNCiMnIEBwYXJhbSAuZGF0YSBBIGRhdGEgc2V0IGluY2x1ZGluZyB0aGUgdmFyaWFibGVzIHlvdSB3YW50IHRvIGdldCB0aGUgbWVhbnMgYW5kIHN0YW5kYXJkIGRldmlhdGlvbnMgZnJvbS4NCiMnIEBwYXJhbSBzZWxlY3RfY29sdW1ucyBBIHZlY3RvciB3aXRoIGEgbGlzdCBvZiB2YXJpYWJsZSBuYW1lcyBmb3Igd2hpY2ggeW91IHdhbnQgdG8gZ2V0IHRoZSBtZWFucyBhbmQgc3RhbmRhcmQgZGV2aWF0aW9ucyBmcm9tLg0KIycNCiMnIEByZXR1cm4gQSBkYXRhLmZyYW1lIChvciB0aWJibGUgb3IgZGF0YS50YWJsZSwgZGVwZW5kaW5nIG9uIGlucHV0IGRhdGEgdHlwZSkgaW5jbHVkaW5nIHRoZSBuYW1lcywgbWVhbnMsIGFuZCBzdGFuZGFyZCBkZXZpYXRpb25zIG9mIHRoZSB2YXJpYWJsZXMgaW5jbHVkZWQgaW4gdGhlIHNlbGVjdF9jb2x1bW5zIGFyZ3VtZW50Lg0KIycgQGV4cG9ydA0KIycNCiMnIEBleGFtcGxlcw0KZ2V0Lm5vcm1fdmFsdWVzIDwtIGZ1bmN0aW9uICguZGF0YSwgc2VsZWN0X2NvbHVtbnMgPSBOVUxMKSB7DQogIHJlc3VsdCA8LSBOVUxMDQogIGZvciAoY29sX25hbWUgaW4gc2VsZWN0X2NvbHVtbnMpIHsNCiAgICBtZWFuIDwtIG1lYW4oLmRhdGFbW2NvbF9uYW1lXV0sIG5hLnJtID0gVFJVRSkNCiAgICBzZCA8LSBzZCguZGF0YVtbY29sX25hbWVdXSwgbmEucm0gPSBUUlVFKQ0KICAgIHJlc3VsdCA8LSByYmluZCAocmVzdWx0LCBjKG1lYW4sIHNkKSkNCiAgfQ0KICByZXN1bHQgPC0gYXMuZGF0YS5mcmFtZShyZXN1bHQsIHN0cmluZ3NBc0ZhY3RvcnMgPSBGQUxTRSkNCiAgcmVzdWx0IDwtIGRhdGEuZnJhbWUgKHNlbGVjdF9jb2x1bW5zLCByZXN1bHQsIHN0cmluZ3NBc0ZhY3RvcnMgPSBGQUxTRSkNCiAgbmFtZXMocmVzdWx0KSA8LSBjKCJuYW1lIiwgIm1lYW4iLCAic2QiKQ0KICByZXR1cm4gKHJlc3VsdCkNCn0NCg0KYGBgDQoNCiMgRGF0ZW5hdWZiZXJlaXR1bmcNCmBgYHtyfQ0KIyBSZWtvZGllcnVuZyB2b24ga2F0ZWdvcmllbGxlbiBWYXJpYWJsZW4gKHp1IER1bW15LVZhcmlhYmxlbikNCmR1bW15X2xpc3QgPC0gYygidmlldyIsICJjb25kaXRpb24iKQ0KaG91c2VfcHJpY2luZ19kdW1teSA9IGR1bW15X2NvbHMoaG91c2VfcHJpY2luZywgZHVtbXlfbGlzdCkNCg0KIyBEZWZpbml0aW9uIHZvbiBWYXJpYWJsZW5saXN0ZW4gZsO8ciBkaWUgRHVtbWllcywgdW0gZGFzIEFyYmVpdGVuIG1pdCBkaWVzZW4genUgZXJsZWljaHRlcm4NCmNvbmRpdGlvbl9kdW1taWVzID0gYygnY29uZGl0aW9uXzEnLCAnY29uZGl0aW9uXzInLCAnY29uZGl0aW9uXzMnLCAnY29uZGl0aW9uXzQnLCAnY29uZGl0aW9uXzUnKQ0Kdmlld19kdW1taWVzID0gYygndmlld18wJywgJ3ZpZXdfMScsICd2aWV3XzInLCAndmlld18zJywndmlld180JykNCg0KDQojIFN0YW5kYXJkaXNpZXJ1bmcgYWxsZXIgRmVhdHVyZSBWYXJpYWJsZW4gdW5kIGRlciBMYWJlbCBWYXJpYWJsZQ0Kbm9ybV9saXN0IDwtIGMoInByaWNlIiwgInNxZnRfbG90IiwgImJhdGhyb29tcyIsICJncmFkZSIsICJ3YXRlcmZyb250Iiwgdmlld19kdW1taWVzLCBjb25kaXRpb25fZHVtbWllcykgIyBMaXN0ZSBhbGxlciBWYXJpYWJsZW4NCm5vcm1fdmFsdWVzX2xpc3QgPC0gZ2V0Lm5vcm1fdmFsdWVzKGhvdXNlX3ByaWNpbmdfZHVtbXksIG5vcm1fbGlzdCkgICAgIyBCZXJlY2hudW5nIGRlciBNaXR0ZWx3ZXJ0ZSB1bmQgU3RkLi1BYncuIGRlciBWYXJpYWJsZW4NCmhvdXNlX3ByaWNpbmdfbm9ybSA8LSBub3JtX2NvbHMoaG91c2VfcHJpY2luZ19kdW1teSwgbm9ybV92YWx1ZXNfbGlzdCkgIyBTdGFuZGFyZGlzaWVydW5nIGRlciBWYXJpYWJsZW4NCmBgYA0KDQojIERlZmluaXRpb24gZGVyIEZlYXVyZS1WYXJpYWJsZW4gdW5kIGRlciBMYWJlbC1WYXJpYWJsZQ0KYGBge3J9DQojIERlZmluaXRpb24gZGVyIEZlYXR1cmVzIChkZXIgdW5hYmjDpG5naWdlbiBWYXJpYWJsZW4gYXVmIGRlcmVuIEJhc2lzIGRpZSBWb3JoZXJzYWdlbiBlcnpldWd0IHdlcmRlbiBzb2xsZW4pDQpmZWF0dXJlcyA9IGMoJ3NxZnRfbG90JywgJ3dhdGVyZnJvbnQnLCAnZ3JhZGUnLCAnYmF0aHJvb21zJywgdmlld19kdW1taWVzLCBjb25kaXRpb25fZHVtbWllcykNCiMgRGVmaW5pdGlvbiBkZXIgTGFiZWwtVmFyaWFibGUgKGRlciBhYmhhZW5naWdlbiBWYXJpYWJsZSwgZGllIHZvcmhlcmdlc2FndCB3ZXJkZW4gc29sbCkgc293aWUNCmxhYmVsID0gJ3ByaWNlX25vcm0nDQpgYGANCg0KIyBEZWZpbml0aW9uIHZvbiBUcmFpbmluZ3MtIHVuZCBUZXN0ZGF0ZW5zYXR6DQpgYGB7cn0NCiMgWnVmYWxsc3rDpGhsZXIgc2V0emVuLCB1bSBkaWUgenVmw6RsbGlnZSBQYXJ0aXRpb25pZXJ1bmcgYmVpIGplZGVtIER1cmNobGF1ZiBnbGVpY2ggenUgaGFsdGVuDQpzZXQuc2VlZCgxKQ0KIyBCZXN0aW1tdW5nIGRlciBJbmRpemVzIGRlcyBUcmFpbmluc2RhdGVuc2F0emVzDQp0cmFpbl9pbmQgPC0gc2FtcGxlKHNlcV9sZW4obnJvdyhob3VzZV9wcmljaW5nX25vcm0pKSwgc2l6ZSA9IGZsb29yKDAuODAgKiBucm93KGhvdXNlX3ByaWNpbmdfbm9ybSkpKQ0KDQojIFRlaWxlbiBpbiBUcmFpbmluZ3MtIHVuZCBUZXN0ZGF0ZW5zYXR6DQp0cmFpbl9kYXRhc2V0ID0gaG91c2VfcHJpY2luZ19ub3JtW3RyYWluX2luZCwgZmVhdHVyZXNdDQp0ZXN0X2RhdGFzZXQgPSBob3VzZV9wcmljaW5nX25vcm1bLXRyYWluX2luZCwgZmVhdHVyZXNdDQoNCiMgU2VsZWt0aW9uIGRlciBWYXJpYWJsZSwgZGllIGFscyBMYWJlbCBkZWZpbmllcnQgd3VyZGUNCnRyYWluX2xhYmVscyA9IGhvdXNlX3ByaWNpbmdfbm9ybVt0cmFpbl9pbmQsIGxhYmVsXQ0KdGVzdF9sYWJlbHMgPSBob3VzZV9wcmljaW5nX25vcm1bLXRyYWluX2luZCwgbGFiZWxdDQpgYGANCg0K</div>
 
 
 
