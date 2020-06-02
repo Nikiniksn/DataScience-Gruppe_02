@@ -15,26 +15,6 @@ library(broom)
 library(fastDummies)
 ```
 
-# Installation von Python und der für TensorFlow benötigten Pakete (nur einmalig nötig)
-```{r}
-install.packages("reticulate")
-library(reticulate)
-
-# Installation von miniconda (falls nicht vorhanden)
-install_miniconda()
-
-# Anlegen einer speziellen Python Umgebung
-conda_create("r-reticulate")
-
-# Installieren der Pakete in der angelegten Umgebung
-conda_install("r-reticulate", "pandas")
-conda_install("r-reticulate", "numpy")
-conda_install("r-reticulate", "tensorflow")
-
-# Verwenden der speziellen Python Umgebung die zuvor erstellt wurde
-use_condaenv("r-reticulate")
-```
-
 # Einlesen der CSV-Datein
 ```{r}
 Umsatzdaten <- read_csv("umsatzdaten_gekuerzt.csv")
@@ -255,67 +235,21 @@ pred_test <- predict(svm_tune$best.model, test_dataset)
 mape(test_dataset$Umsatz, pred_test)
 ```
 
-## Neuronales Netz
-### Funktionsdefinitionen ###
-```{r}
-#' Title Fast creation of normalized variables
-#' Quickly create normalized columns from numeric type columns in the input data. This function is useful for statistical analysis when you want normalized columns rather than the actual columns.
-#'
-#' @param .data An object with the data set you want to make normalized columns from.
-#' @param norm_values Dataframe of column names, means, and standard deviations that is used to create corresponding normalized variables from.
-#'
-#' @return A data.frame (or tibble or data.table, depending on input data type) with same number of rows an dcolumns as the inputted data, only with normalized columns for the variables indicated in the norm_values argument.
-#' @export
-#'
-#' @examples
-norm_cols <- function (.data, norm_values = NULL) {
-  for (i in 1:nrow(norm_values)  ) {
-    .data[[norm_values$name[i]]] <- (.data[[norm_values$name[i]]] - norm_values$mean[i]) / norm_values$sd[i]
-  }
-  return (.data)
-}
-
-
-#' Title Creation of a Dataframe including the Information to Standardize Variables
-#' This function is meant to be used in combination with the function norm_cols
-#'
-#' @param .data A data set including the variables you want to get the means and standard deviations from.
-#' @param select_columns A vector with a list of variable names for which you want to get the means and standard deviations from.
-#'
-#' @return A data.frame (or tibble or data.table, depending on input data type) including the names, means, and standard deviations of the variables included in the select_columns argument.
-#' @export
-#'
-#' @examples
-get.norm_values <- function (.data, select_columns = NULL) {
-  result <- NULL
-  for (col_name in select_columns) {
-    mean <- mean(.data[[col_name]], na.rm = TRUE)
-    sd <- sd(.data[[col_name]], na.rm = TRUE)
-    result <- rbind (result, c(mean, sd))
-  }
-  result <- as.data.frame(result, stringsAsFactors = FALSE)
-  result <- data.frame (select_columns, result, stringsAsFactors = FALSE)
-  names(result) <- c("name", "mean", "sd")
-  return (result)
-}
-
-```
-
 # Datenaufbereitung
 ```{r}
 # Rekodierung von kategoriellen Variablen (zu Dummy-Variablen)
-dummy_list <- c("view", "condition")
-house_pricing_dummy = dummy_cols(house_pricing, dummy_list)
+dummy_list <- c("view", "Warengruppe")
+Sammlung_dummy = dummy_cols(Sammlung, dummy_list)
 
 # Definition von Variablenlisten für die Dummies, um das Arbeiten mit diesen zu erleichtern
-condition_dummies = c('condition_1', 'condition_2', 'condition_3', 'condition_4', 'condition_5')
+Warengruppe_dummies = c('warengruppe_1', 'warengruppe_2', 'condition_3', 'condition_4', 'condition_5')
 view_dummies = c('view_0', 'view_1', 'view_2', 'view_3','view_4')
 
 
 # Standardisierung aller Feature Variablen und der Label Variable
-norm_list <- c("price", "sqft_lot", "bathrooms", "grade", "waterfront", view_dummies, condition_dummies) # Liste aller Variablen
-norm_values_list <- get.norm_values(house_pricing_dummy, norm_list)    # Berechnung der Mittelwerte und Std.-Abw. der Variablen
-house_pricing_norm <- norm_cols(house_pricing_dummy, norm_values_list) # Standardisierung der Variablen
+norm_list <- c("Umsatz", "Temperatur", "Bewoelkung", "Windgeschwindigkeit", view_dummies, Warengruppe_dummies) # Liste aller Variablen
+norm_values_list <- get.norm_values(Sammlung_dummy, norm_list)    # Berechnung der Mittelwerte und Std.-Abw. der Variablen
+Sammlung_norm <- norm_cols(Sammlung_dummy, norm_values_list) # Standardisierung der Variablen
 ```
 
 # Definition der Feaure-Variablen und der Label-Variable
@@ -341,4 +275,173 @@ test_dataset = house_pricing_norm[-train_ind, features]
 train_labels = house_pricing_norm[train_ind, label]
 test_labels = house_pricing_norm[-train_ind, label]
 ```
+
+### Installation von Python und TensorFlow (nur einmalig nötig)
+
+```{r}
+#  install.packages("reticulate")
+#  library(reticulate)
+#  
+#  # Installation von miniconda (falls nicht vorhanden)
+#  install_miniconda()
+#  
+#  # Anlegen einer speziellen Python Umgebung
+#  conda_create("r-reticulate")
+#  
+#  # Installieren der Pakete in der angelegten Umgebung
+#  conda_install("r-reticulate", "pandas")
+#  conda_install("r-reticulate", "numpy")
+#  conda_install("r-reticulate", "tensorflow")
+#  
+# # Verwenden der speziellen Python Umgebung die zuvor erstellt wurde
+# use_condaenv("r-reticulate")
+
+```
+
+
+### Aufruf des Skripts zur Datenaufbereitung
+```{r}
+source("neural-net-data-preparation.R")
+
+```
+
+
+### Laden benötigter  Packages
+```{r}
+library(reticulate)
+library(ggplot2)
+library(Metrics)
+
+```
+
+
+### Definition des Neuronalen Netzes
+```{python}
+# Benoetigte Python Libraries einbinden
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+
+# Definition der Form des tiefen neuronalen Netzes (Deep Neural Nets)
+model = keras.Sequential([
+  layers.Dense(10, activation='relu', input_shape=[len(r.train_dataset.keys())]),
+  layers.Dense(4, activation='relu'),
+  layers.Dense(1)
+])
+
+# Definition der Kosten-(Loss-)Funktion und der Optimierungsfunktion mit seinen Hyperparametern
+model.compile(loss="mse",
+              optimizer=tf.keras.optimizers.SGD(lr=1e-6, momentum=0.9))
+
+# Ausgabe einer Zusammenfassung zur Form des Modells, das geschaetzt wird (nicht notwendig)
+model.summary()
+
+
+```
+
+### Schätzung des neuronalen Netzes
+
+```{python}
+# Schaetzung des Modells
+history = model.fit(r.train_dataset, r.train_labels, epochs=150, validation_data = (r.test_dataset, r.test_labels), verbose=0)
+
+# Ggf. Speichern des geschaetzten Modells
+# model.save("python_model.h5")
+
+```
+
+
+
+### Auswertung der Modelloptimierung
+```{r}
+# Grafische Ausgabe der Modelloptimierung
+
+# create data
+data <- data.frame(val_loss = unlist(py$history$history$val_loss),
+                  loss = unlist(py$history$history$loss))
+
+# Plot
+ggplot(data[-1,]) +
+  geom_line( aes(x=1:length(val_loss), y=val_loss, colour = "Validation Loss" )) +
+  geom_line( aes(x=1:length(loss), y=loss, colour = "Training Loss" )) +
+  scale_colour_manual( values = c("Training Loss"="blue", "Validation Loss"="red") ) +
+  labs(title="Loss Function Values During Optimization") +
+  xlab("Iteration Number") +
+  ylab("Loss") 
+
+
+```
+
+
+### (Ggf.) Laden eines gespeicherten Neuronalen Netzes ###
+```{python}
+model = keras.models.load_model("python_model_best.h5")
+
+```
+
+
+### Auswertung der Schätzergebnisse ###
+```{r}
+# Schätzung der (normierten) Preise für die Trainings- und Testdaten
+train_predictions_norm <- py$model$predict(train_dataset)
+test_predictions_norm <- py$model$predict(test_dataset)
+
+# Rückberechnung der normierten Preisschätzungen zu den tatsächlichen Preisschätzungen bzw. Preisen
+train_predictions <- (train_predictions_norm * norm_values_list$sd[1] ) + norm_values_list$mean[1]
+test_predictions <- (test_predictions_norm * norm_values_list$sd[1]) + norm_values_list$mean[1]
+# Selektion der zugehörigen tatsächlichen Preise
+train_actuals <- house_pricing$price[train_ind]
+test_actuals <- house_pricing$price[-train_ind]
+
+
+# Vergleich der Gütekriterien für die Traingings- und Testdaten
+cat(paste0("MAPE on the Training Data:\t", format(mape(train_actuals, train_predictions)*100, digits=3, nsmall=2)))
+cat(paste0("\nMAPE on the Test Data:\t\t", format(mape(test_actuals, test_predictions)*100, digits=3, nsmall=2)))
+
+
+```
+
+```{r}
+
+## Grafischer vergleich der vorhergesagten und der tatsächlichen Preise für die Trainings- und Testdaten
+
+# Zusammenstellung der Daten für die Plots
+data_train <- data.frame(prediction = train_predictions/1000, actual = train_actuals/1000)
+data_test <- data.frame(prediction = test_predictions/1000, actual = test_actuals/1000)
+
+# Plot der Ergebnisse der Trainingsdaten
+ggplot(data_train[1:100,]) +
+  geom_line( aes(x=1:length(prediction), y=prediction, colour = "Predicted Values" )) +
+  geom_line( aes(x=1:length(actual), y=actual, colour = "Actual Values" )) +
+  scale_colour_manual( values = c("Predicted Values"="blue", "Actual Values"="red") ) +
+  labs(title="Predicted and Actual Values for the Training Data") +
+  xlab("Case Number") +
+  ylab("Price in 1.000 USD") 
+
+# Plot der Ergebnisse der Testdaten
+ggplot(data_test[1:100,]) +
+  geom_line( aes(x=1:length(prediction), y=prediction, colour = "Predicted Values" )) +
+  geom_line( aes(x=1:length(actual), y=actual, colour = "Actual Values" )) +
+  scale_colour_manual( values = c("Predicted Values"="blue", "Actual Values"="red") ) +
+  labs(title="Predicted and Actual Values for the Test Data") +
+  xlab("Case Number") +
+  ylab("Price in 1.000 USD") 
+
+
+```
+
+```{r}
+# Vorhersage für einen einzelnen Fall
+cat(paste0("Vorergesagter Preis:\t", format(test_predictions[100], digits=2, nsmall =0)))
+cat(paste0("\nTatsächlicher Preis:\t", test_actuals[100]))
+
+
+```
+
+
+
+
+
+
 
