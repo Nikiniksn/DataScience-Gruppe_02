@@ -19,7 +19,9 @@ library(fastDummies)
 ```{r}
 Umsatzdaten <- read_csv("umsatzdaten_gekuerzt.csv")
 
-Kiwo <- read_csv("kiwo.csv")
+#Kiwo <- read_csv("kiwo.csv")
+
+Kiwo_2 <- read_csv("kiwo_2.csv")
 
 Feiertage <- read_csv("Feiertage.csv")
 
@@ -39,7 +41,8 @@ Umsatzdaten$Wochentag <- factor(Umsatzdaten$Wochentag, levels=c("Montag", "Diens
 # Zusammenführung der Datein zu einer Tabelle
 ```{r}
 Sammlung <- dplyr::full_join(Umsatzdaten,Wetter,by="Datum")
-Sammlung <- dplyr::full_join(Sammlung,Kiwo,by="Datum")
+#Sammlung <- dplyr::full_join(Sammlung,Kiwo,by="Datum")
+Sammlung <- dplyr::full_join(Sammlung,Kiwo_2,by="Datum")
 Sammlung <- dplyr::full_join(Sammlung,Schulferien,by="Datum")
 Sammlung <- dplyr::full_join(Sammlung,Feiertage,by="Datum")
 ```
@@ -92,7 +95,7 @@ summary (mod)
 
 # Vorhersage durch Kieler Woche
 ```{r}
-mod <-lm (Umsatz ~ KielerWoche, Sammlung)
+mod <-lm (Umsatz ~ KielerWoche_2, Sammlung)
 summary (mod)
 #Kieler Woche wirkt sich signifikant positiv auf Umsatz aus, starker Effekt**
 ```
@@ -130,12 +133,12 @@ summary(mod)
 # To Do: Systematisierung der Faktoren und Integration von Wochentages, Feiertagen und Ferien###
 ```{r}
 mod1 <- lm(Umsatz ~ Temperatur, Sammlung)
-mod2 <- lm(Umsatz ~ Temperatur + Windgeschwindigkeit, Sammlung)
-mod3 <- lm(Umsatz ~ Temperatur + Windgeschwindigkeit + as.factor(Bewoelkung), Sammlung)
-mod4 <- lm(Umsatz ~ Temperatur + Windgeschwindigkeit + as.factor(Bewoelkung) + as.factor(Wettercode), Sammlung)
-mod5 <- lm(Umsatz ~ Temperatur + Windgeschwindigkeit + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe), Sammlung)
-mod6 <- lm(Umsatz ~ Temperatur + Windgeschwindigkeit + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche, Sammlung)
-mod7 <- lm(Umsatz ~ Temperatur + Windgeschwindigkeit + Windgeschwindigkeit*Temperatur + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche , Sammlung)
+mod2 <- lm(Umsatz ~ Temperatur, Sammlung)
+mod3 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung), Sammlung)
+mod4 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode), Sammlung)
+mod5 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe), Sammlung)
+mod6 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche_2, Sammlung)
+mod7 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + Windgeschwindigkeit*Temperatur + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche_2 , Sammlung)
 ```
 
 ```{r}
@@ -192,12 +195,12 @@ rbind(mape(Sammlung$Umsatz, predict(mod1)),
 
 ```{r}
 # Model Prediction Quality for the (Unknown) Test Data Using the Mean Absolute Percentage Error
-rbind(mape(Sammlung_test$Umsatz, predict(mod1, newdata=Sammlung_test)),
-      mape(Sammlung_test$Umsatz, predict(mod2, newdata=Sammlung_test)),
-      mape(Sammlung_test$Umsatz, predict(mod3, newdata=Sammlung_test)),
-      mape(Sammlung_test$Umsatz, predict(mod4, newdata=Sammlung_test)),
-      mape(Sammlung_test$Umsatz, predict(mod5, newdata=Sammlung_test)),
-      mape(Sammlung_test$Umsatz, predict(mod6, newdata=Sammlung_test)))
+rbind(mape(Sammlung$Umsatz, predict(mod1, newdata=test_dataset)),
+      mape(Sammlung$Umsatz, predict(mod2, newdata=test_dataset)),
+      mape(Sammlung$Umsatz, predict(mod3, newdata=test_dataset)),
+      mape(Sammlung$Umsatz, predict(mod4, newdata=test_dataset)),
+      mape(Sammlung$Umsatz, predict(mod5, newdata=test_dataset)),
+      mape(Sammlung$Umsatz, predict(mod6, newdata=test_dataset)))
 ```
 
 ## Data Preparation
@@ -431,12 +434,14 @@ ggplot(data_test[1:100,]) +
 
 ```
 
-```{r}
 # Vorhersage für einen einzelnen Fall
+```{r}
 cat(paste0("Vorergesagter Preis:\t", format(test_predictions[100], digits=2, nsmall =0)))
 cat(paste0("\nTatsächlicher Preis:\t", test_actuals[100]))
 
-
+#Folgende Daten müssen vorhergesagt werden
+# SVM 04.06.2019 je Warengruppe und Warengruppenumsatz
+# Neuronales Netz 04.06.2019 je Warengruppe und Warengruppenumsatz
 ```
 
 
