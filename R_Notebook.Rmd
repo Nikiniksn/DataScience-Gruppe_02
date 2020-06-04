@@ -19,15 +19,13 @@ library(fastDummies)
 ```{r}
 Umsatzdaten <- read_csv("umsatzdaten_gekuerzt.csv")
 
-#Kiwo <- read_csv("kiwo.csv")
-
 Kiwo_2 <- read_csv("kiwo_2.csv")
 
-Feiertage <- read_csv("Feiertage.csv")
+Feiertage_2 <- read_csv("Feiertage_2.csv")
 
-Schulferien <- read_csv("Schulferien.csv")
+Schulferien <- read_csv("Schulferien_2.csv")
 
-Wetter <- read_csv("wetter.csv")
+Wetter <- read_csv("wetter_3.csv")
 ```
 
 # Integrierung der Wochentage in die Datei Umsatzdaten
@@ -44,7 +42,12 @@ Sammlung <- dplyr::full_join(Umsatzdaten,Wetter,by="Datum")
 #Sammlung <- dplyr::full_join(Sammlung,Kiwo,by="Datum")
 Sammlung <- dplyr::full_join(Sammlung,Kiwo_2,by="Datum")
 Sammlung <- dplyr::full_join(Sammlung,Schulferien,by="Datum")
-Sammlung <- dplyr::full_join(Sammlung,Feiertage,by="Datum")
+Sammlung <- dplyr::full_join(Sammlung,Feiertage_2,by="Datum")
+```
+
+# Kategorisierung der Daten
+```{r}
+cut(Sammlung$Temperatur, breaks = c(-20, 0, 11, 21, 31), labels ("eisig", "kalt", "fruehling", "warm", "heiss"), right=FALSE)
 ```
 
 ## Aufteilung des Datensatzes in Trainings- und Testdaten
@@ -138,18 +141,31 @@ mod3 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewo
 mod4 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode), Sammlung)
 mod5 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe), Sammlung)
 mod6 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche_2, Sammlung)
-mod7 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + Windgeschwindigkeit*Temperatur + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche_2 , Sammlung)
+mod7 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche_2 , Sammlung)
 ```
 
 ```{r}
+mod1 <- lm(Umsatz ~ Temperatur, test_dataset)
+mod2 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit), test_dataset)
+mod3 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung), test_dataset)
+mod4 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode), test_dataset)
+mod5 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe), test_dataset)
+mod6 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche_2, test_dataset)
+mod7 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche_2 , test_dataset)
+
+```
+
+
+
+```{r}
 summary(mod1)
-summary (mod2)
-summary(mod3)
-summary(mod3)
-summary(mod4)
-summary(mod5)
-summary(mod6)
-summary(mod7)
+summary(mod2)
+#summary(mod3)
+#summary(mod3)
+#summary(mod4)
+#summary(mod5)
+#summary(mod6)
+#summary(mod7)
 ```
 
 ```{r}
@@ -181,6 +197,19 @@ rbind(mae(Sammlung$Umsatz, predict(mod1)),
       mae(Sammlung$Umsatz, predict(mod6)),
       mae(Sammlung$Umsatz, predict(mod7)))
 ```
+
+# Test mit den Umformatierten Daten
+```{r}
+rbind(mae(test_dataset$Umsatz, predict(mod1)),
+      mae(test_dataset$Umsatz, predict(mod2)),
+      mae(test_dataset$Umsatz, predict(mod3)),
+      mae(test_dataset$Umsatz, predict(mod4)),
+      mae(test_dataset$Umsatz, predict(mod5)),
+      mae(test_dataset$Umsatz, predict(mod6)),
+      mae(test_dataset$Umsatz, predict(mod7)))
+```
+
+
 
 ```{r}
 # Model Prediction Quality for the Training Data Using the Mean Absolute Percentage Error
