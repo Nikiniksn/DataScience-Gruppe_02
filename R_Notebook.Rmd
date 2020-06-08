@@ -47,6 +47,96 @@ Sammlung <- dplyr::full_join(Sammlung,Schulferien,by="Datum")
 Sammlung <- dplyr::full_join(Sammlung,Feiertage_2,by="Datum")
 ```
 
+Balkendiagramm der Umsätze aller Warengruppen je Schulferien (ohne Konfidenzintervall)
+```{r}
+# Berechnung von Mittelwerten, Standardabweichungen, Standardfehlern und Konfidenzintervallen
+my_sum <- Sammlung %>%
+  group_by(Ferien) %>%
+  summarise(
+    n=n(),
+    mean=mean(Umsatz),
+    sd=sd(Umsatz)
+  ) %>%
+  mutate( se=sd/sqrt(n))  %>%
+  mutate( ic=se * qt((1-0.05)/2 + .5, n-1))
+
+# Confidence Interval
+ggplot(my_sum) +
+  geom_bar( aes(x=Ferien, y=mean), stat="identity", fill="forestgreen", alpha=0.5) +
+  geom_errorbar( aes(x=Ferien, ymin=mean-ic, ymax=mean+ic), width=0.4, colour="orange", alpha=0.9, size=1.5) +
+  ggtitle("using confidence interval")
+
+```
+Balkendiagramm der Umsätze aller Warengruppen je Schulferien (ohne Konfidenzintervall)
+```{r}
+# Berechnung von Mittelwerten, Standardabweichungen, Standardfehlern und Konfidenzintervallen
+Feiertag_Diagramm <- Sammlung %>%
+  group_by(Feiertag) %>%
+  summarise(
+    n=n(),
+    mean=mean(Umsatz),
+    sd=sd(Umsatz)
+  ) %>%
+  mutate( se=sd/sqrt(n))  %>%
+  mutate( ic=se * qt((1-0.05)/2 + .5, n-1))
+
+# Confidence Interval
+ggplot(Feiertag_Diagramm) +
+  geom_bar( aes(x=Feiertag, y=mean), stat="identity", fill="forestgreen", alpha=0.5) +
+  geom_errorbar( aes(x=Feiertag, ymin=mean-ic, ymax=mean+ic), width=0.4, colour="orange", alpha=0.9, size=1.5) +
+  ggtitle("using confidence interval")
+
+```
+
+Balkendiagramm der Umsätze aller Warengruppen je Schulferien (ohne Konfidenzintervall)
+```{r}
+# Berechnung von Mittelwerten, Standardabweichungen, Standardfehlern und Konfidenzintervallen
+Feiertag_Diagramm <- Sammlung %>%
+  group_by(Wettercode_Ueberkat) %>%
+  summarise(
+    n=n(),
+    mean=mean(Umsatz),
+    sd=sd(Umsatz)
+  ) %>%
+  mutate( se=sd/sqrt(n))  %>%
+  mutate( ic=se * qt((1-0.05)/2 + .5, n-1))
+
+# Confidence Interval
+ggplot(Feiertag_Diagramm) +
+  geom_bar( aes(x=Wettercode_Ueberkat, y=mean), stat="identity", fill="forestgreen", alpha=0.5) +
+  geom_errorbar( aes(x=Wettercode_Ueberkat, ymin=mean-ic, ymax=mean+ic), width=0.4, colour="orange", alpha=0.9, size=1.5) +
+  ggtitle("using confidence interval")
+
+```
+Balkendiagramm der Umsätze aller Warengruppen je Schulferien (ohne Konfidenzintervall)
+```{r}
+# Berechnung von Mittelwerten, Standardabweichungen, Standardfehlern und Konfidenzintervallen
+Feiertag_Diagramm <- Sammlung %>%
+  group_by(Temperatur_Code) %>%
+  summarise(
+    n=n(),
+    mean=mean(Umsatz),
+    sd=sd(Umsatz)
+  ) %>%
+  mutate( se=sd/sqrt(n))  %>%
+  mutate( ic=se * qt((1-0.05)/2 + .5, n-1))
+
+# Confidence Interval
+ggplot(Feiertag_Diagramm) +
+  geom_bar( aes(x=Temperatur_Code, y=mean), stat="identity", fill="forestgreen", alpha=0.5) +
+  geom_errorbar( aes(x=Temperatur_Code, ymin=mean-ic, ymax=mean+ic), width=0.4, colour="orange", alpha=0.9, size=1.5) +
+  ggtitle("using confidence interval")
+
+```
+
+```{r}
+
+ggplot(Sammlung) +
+  facet_wrap(~Warengruppe) +
+  geom_point(aes(x = Feiertag, y = mean))
+
+```
+
 
 ## Aufteilung des Datensatzes in Trainings- und Testdaten
 ```{r}
