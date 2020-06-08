@@ -26,6 +26,8 @@ Feiertage_2 <- read_csv("Feiertage_2.csv")
 Schulferien <- read_csv("Schulferien_2.csv")
 
 Wetter <- read_csv("wetter_3.csv")
+
+wetter_kodiert <- read_csv("Wetter_kodiert.csv")
 ```
 
 # Integrierung der Wochentage in die Datei Umsatzdaten
@@ -38,18 +40,13 @@ Umsatzdaten$Wochentag <- factor(Umsatzdaten$Wochentag, levels=c("Montag", "Diens
 
 # Zusammenführung der Datein zu einer Tabelle
 ```{r}
-Sammlung <- dplyr::full_join(Umsatzdaten,Wetter,by="Datum")
+Sammlung <- dplyr::full_join(Umsatzdaten,wetter_kodiert,by="Datum")
 #Sammlung <- dplyr::full_join(Sammlung,Kiwo,by="Datum")
 Sammlung <- dplyr::full_join(Sammlung,Kiwo_2,by="Datum")
 Sammlung <- dplyr::full_join(Sammlung,Schulferien,by="Datum")
 Sammlung <- dplyr::full_join(Sammlung,Feiertage_2,by="Datum")
 ```
 
-# Kategorisierung der Daten
-```{r}
-Sammlung$Temperatur <- as.numeric(as.character(Sammlung$Temperatur))
-cut(Sammlung$Temperatur, breaks = c(-20, 0, 11, 21), labels ("eisig", "kalt", "warm"), right=FALSE)
-```
 
 ## Aufteilung des Datensatzes in Trainings- und Testdaten
 ```{r}
@@ -57,7 +54,7 @@ cut(Sammlung$Temperatur, breaks = c(-20, 0, 11, 21), labels ("eisig", "kalt", "w
 set.seed(1)
 
 # Zufällige Ziehung Indizes für die Zeilen des Datensatzes, die dem Traininsdatensatz zugeordnet werden
-indices_train <- sample(seq_len(nrow(Sammlung)), size = floor(0.80 * nrow(Sammlung)))
+indices_train <- sample(seq_len(nrow(Sammlung)), size = floor(0.99 * nrow(Sammlung)))
 
 # Definition des Trainings- und Testdatensatz durch Selektion bzw. Deselektion der entsprechenden Datenzeilen
 train_dataset <- train_dataset_org <- Sammlung[indices_train, ]
@@ -138,21 +135,21 @@ summary(mod)
 ```{r}
 mod1 <- lm(Umsatz ~ Temperatur, Sammlung)
 mod2 <- lm(Umsatz ~ Temperatur, Sammlung)
-mod3 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung), Sammlung)
-mod4 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode), Sammlung)
-mod5 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe), Sammlung)
-mod6 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche_2, Sammlung)
-mod7 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche_2 , Sammlung)
+mod3 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit_kodiert) + as.factor(Bewoelkung), Sammlung)
+mod4 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit_kodiert) + as.factor(Bewoelkung) + as.factor(Wettercode_Ueberkat), Sammlung)
+mod5 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit_kodiert) + as.factor(Bewoelkung) + as.factor(Wettercode_Ueberkat) + as.factor(Warengruppe), Sammlung)
+mod6 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit_kodiert) + as.factor(Bewoelkung) + as.factor(Wettercode_Ueberkat) + as.factor(Warengruppe) + KielerWoche_2, Sammlung)
+mod7 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit_kodiert) + as.factor(Bewoelkung) + as.factor(Wettercode_Ueberkat) + as.factor(Warengruppe) + KielerWoche_2 , Sammlung)
 ```
 
 ```{r}
-mod1 <- lm(Umsatz ~ Temperatur, test_dataset)
-mod2 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit), test_dataset)
-mod3 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung), test_dataset)
-mod4 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode), test_dataset)
-mod5 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe), test_dataset)
-mod6 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche_2, test_dataset)
-mod7 <- lm(Umsatz ~ Temperatur + as.factor(Windgeschwindigkeit) + as.factor(Bewoelkung) + as.factor(Wettercode) + as.factor(Warengruppe) + KielerWoche_2 , test_dataset)
+mod1 <- lm(Umsatz ~ Temperatur_Code, test_dataset)
+mod2 <- lm(Umsatz ~ Temperatur_Code + as.factor(Windgeschwindigkeit_kodiert), test_dataset)
+mod3 <- lm(Umsatz ~ Temperatur_Code + as.factor(Windgeschwindigkeit_kodiert) + as.factor(Bewoelkung), test_dataset)
+mod4 <- lm(Umsatz ~ Temperatur_Code + as.factor(Windgeschwindigkeit_kodiert) + as.factor(Bewoelkung) + as.factor(Wettercode_Ueberkat), test_dataset)
+mod5 <- lm(Umsatz ~ Temperatur_Code + as.factor(Windgeschwindigkeit_kodiert) + as.factor(Bewoelkung) + as.factor(Wettercode_Ueberkat) + as.factor(Warengruppe), test_dataset)
+mod6 <- lm(Umsatz ~ Temperatur_Code + as.factor(Windgeschwindigkeit_kodiert) + as.factor(Bewoelkung) + as.factor(Wettercode_Ueberkat) + as.factor(Warengruppe) + KielerWoche_2, test_dataset)
+mod7 <- lm(Umsatz ~ Temperatur_Code + as.factor(Windgeschwindigkeit_kodiert) + as.factor(Bewoelkung) + as.factor(Wettercode_Ueberkat) + as.factor(Warengruppe) + KielerWoche_2 , test_dataset)
 
 ```
 
@@ -214,23 +211,23 @@ rbind(mae(test_dataset$Umsatz, predict(mod1)),
 
 ```{r}
 # Model Prediction Quality for the Training Data Using the Mean Absolute Percentage Error
-rbind(mape(Sammlung$Umsatz, predict(mod1)),
-       mape(Sammlung$Umsatz, predict(mod2)),
-       mape(Sammlung$Umsatz, predict(mod3)),
-       mape(Sammlung$Umsatz, predict(mod4)),
-       mape(Sammlung$Umsatz, predict(mod5)),
-       mape(Sammlung$Umsatz, predict(mod6)),
-       mape(Sammlung$Umsatz, predict(mod7)))
+rbind(mape(test_dataset$Umsatz, predict(mod1)),
+       mape(test_dataset$Umsatz, predict(mod2)),
+       mape(test_dataset$Umsatz, predict(mod3)),
+       mape(test_dataset$Umsatz, predict(mod4)),
+       mape(test_dataset$Umsatz, predict(mod5)),
+       mape(test_dataset$Umsatz, predict(mod6)),
+       mape(test_dataset$Umsatz, predict(mod7)))
 ```
 
 ```{r}
 # Model Prediction Quality for the (Unknown) Test Data Using the Mean Absolute Percentage Error
-rbind(mape(Sammlung$Umsatz, predict(mod1, newdata=test_dataset)),
-      mape(Sammlung$Umsatz, predict(mod2, newdata=test_dataset)),
-      mape(Sammlung$Umsatz, predict(mod3, newdata=test_dataset)),
-      mape(Sammlung$Umsatz, predict(mod4, newdata=test_dataset)),
-      mape(Sammlung$Umsatz, predict(mod5, newdata=test_dataset)),
-      mape(Sammlung$Umsatz, predict(mod6, newdata=test_dataset)))
+rbind(mape(test_dataset$Umsatz, predict(mod1, newdata=train_dataset)),
+      mape(test_dataset$Umsatz, predict(mod2, newdata=train_dataset)),
+      mape(test_dataset$Umsatz, predict(mod3, newdata=train_dataset)),
+      mape(test_dataset$Umsatz, predict(mod4, newdata=train_dataset)),
+      mape(test_dataset$Umsatz, predict(mod5, newdata=train_dataset)),
+      mape(test_dataset$Umsatz, predict(mod6, newdata=train_dataset)))
 ```
 
 ## Data Preparation
@@ -243,13 +240,13 @@ train_dataset <- sample_frac(train_dataset_org, .10)
 ```{r}
 # Estimation of an SVM with optimized weighting parameters and given standard hyper parameters
 # Typically not used; instead, the function svm_tune is used in order to also get a model with optimized hyper parameters
-model_svm <- svm(Umsatz ~ Wochentag, train_dataset)
+model_svm <- svm(Umsatz ~ Wochentag, test_dataset)
 ```
 
 ```{r}
 # Estimation of various SVM (each with optimized weighting parameters) using systematically varied hyper parameters (typically called 'grid search' approach) and cross validation
 # the resulting object includes the optimal model in the element named 'best.model'
-svm_tune <- tune(svm, Umsatz ~ Wochentag + Bewoelkung + Temperatur + Ferien, data=train_dataset,
+svm_tune <- tune(svm, Umsatz ~ Wochentag +  + Temperatur + Ferien, data=test_dataset,
                  ranges = list(epsilon = seq(0.2,1,0.1), cost = 2^(2:3)))
 ```
 
